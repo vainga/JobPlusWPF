@@ -25,6 +25,10 @@ namespace JobPlusWPF.DBLogic
             optionsBuilder.UseNpgsql("Host=localhost;Database=JobPlusDB;Username=postgres;Password=20110409");
         }
 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
         public void SeedAdmin()
         {
             if (!Users.Any())
@@ -40,7 +44,7 @@ namespace JobPlusWPF.DBLogic
         {
             modelBuilder.Entity<User>()
                 .Property(u => u.Id)
-                .ValueGeneratedOnAdd(); // Устанавливает автоинкремент для Id
+                .ValueGeneratedOnAdd();
         }
 
     }

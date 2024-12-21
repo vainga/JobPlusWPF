@@ -5,82 +5,66 @@ using JobPlusWPF.View;
 using JobPlusWPF.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
-using System.Data;
+using System;
 using System.Windows;
 
 namespace JobPlusWPF
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    /// 
-
     public partial class App : Application
     {
-        //private ServiceProvider _serviceProvider;
+        public static IServiceProvider Services { get; private set; } // Сделайте свойство публичным
 
-        private AppDbContext _context;
+        private ServiceProvider _serviceProvider;
 
         public App()
         {
-            //ConfigureServices();
-            //SeedDatabase();
-            _context = new AppDbContext();
-            _context.SeedAdmin();
+            ConfigureServices();
         }
 
-        //private void ConfigureServices()
-        //{
-        //    var services = new ServiceCollection();
+        private void ConfigureServices()
+        {
+            var services = new ServiceCollection();
 
-        //    // Регистрация DbContext
-        //    services.AddDbContext<AppDbContext>();
+            // Регистрация DbContext с Npgsql
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql("Host=localhost;Database=JobPlusDB;Username=postgres;Password=20110409"));
 
-        //    // Регистрация репозиториев и сервисов
-        //    services.AddScoped<IRepository<User>, Repository<User>>();
-        //    services.AddScoped<UserService>();
+            // Регистрация репозиториев и сервисов
+            services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<UserService>();
 
-        //    // Регистрация ViewModel
-        //    services.AddScoped<EnterViewModel>();
+            // Регистрация ViewModel
+            services.AddScoped<EnterViewModel>();
 
-        //    // Регистрация окон
-        //    services.AddTransient<EnterWindow>();
+            // Регистрация окон
+            services.AddTransient<EnterWindow>();
 
-        //    _serviceProvider = services.BuildServiceProvider();
-        //}
+            // Строим контейнер зависимостей
+            _serviceProvider = services.BuildServiceProvider();
 
-        //private void SeedDatabase()
-        //{
-        //    // Инициализация базы данных
-        //    using var scope = _serviceProvider.CreateScope();
-        //    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        //    context.SeedAdmin();
-        //}
+            // Инициализация свойства Services
+            Services = _serviceProvider; // Присваиваем свойству значение _serviceProvider
+        }
 
-        //protected override void OnStartup(StartupEventArgs e)
-        //{
-        //    base.OnStartup(e);
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
-        //    // Получаем экземпляр EnterViewModel
-        //    var enterViewModel = _serviceProvider.GetRequiredService<EnterViewModel>();
+            // Создаем окно и передаем ViewModel через DI
+            var enterWindow = _serviceProvider.GetRequiredService<EnterWindow>();
+            enterWindow.Show();
+        }
 
-        //    // Создаем окно и передаем ViewModel в конструктор
-        //    var enterWindow = _serviceProvider.GetRequiredService<EnterWindow>();
-        //    enterWindow.DataContext = enterViewModel; // Обязательно установите DataContext
-        //    enterWindow.Show();
-        //}
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
 
-
-        //protected override void OnExit(ExitEventArgs e)
-        //{
-        //    base.OnExit(e);
-
-        //    if (_serviceProvider is IDisposable disposable)
-        //    {
-        //        disposable.Dispose();
-        //    }
-        //}
+            // Освобождение ресурсов
+            if (_serviceProvider is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
     }
 
 }
