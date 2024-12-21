@@ -27,13 +27,20 @@ namespace JobPlusWPF.DBLogic
 
         public void SeedAdmin()
         {
-            if (!Users.Any())  
+            if (!Users.Any())
             {
-                string adminPassword = "admin"; 
-                var adminUser = new User(0, "admin", adminPassword, Role.Admin);
+                string adminPassword = "admin";
+                var adminUser = new User("admin", adminPassword, Role.Admin);
                 Users.Add(adminUser);
                 SaveChanges();
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .Property(u => u.Id)
+                .ValueGeneratedOnAdd(); // Устанавливает автоинкремент для Id
         }
 
     }

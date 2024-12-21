@@ -19,9 +19,8 @@ namespace JobPlusWPF.Model.Classes
         public string Password { get; private set; }
         public Role Role { get; private set; }
 
-        public User(int id, string login, string password, Role role = Role.User)
+        public User(string login, string password, Role role = Role.User)
         {
-            Id = id;
             Login = login;
             Password = BCrypt.Net.BCrypt.HashPassword(password);
             Role = role;
@@ -31,6 +30,17 @@ namespace JobPlusWPF.Model.Classes
         {
             return BCrypt.Net.BCrypt.Verify(password, Password);
         }
+
+        public void UpdatePassword(string newPassword)
+        {
+            Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        }
+
+        public void UpdateRole(Role newRole)
+        {
+            Role = newRole;
+        }
+
 
     }
 }

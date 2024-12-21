@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace JobPlusWPF.DBLogic
 {
-    public class Repository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly AppDbContext _context;
         private readonly DbSet<T> _dbSet;
 
         public Repository(AppDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<T>();
         }
 
@@ -50,9 +50,18 @@ namespace JobPlusWPF.DBLogic
         }
 
         // Метод для поиска элементов по условию
-        public async Task<List<T>> FindAsync(Func<T, bool> predicate)
+        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            return _dbSet.Where(predicate).ToList();
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
+        // Метод для обновления элемента
+        public async Task UpdateAsync(T entity)
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

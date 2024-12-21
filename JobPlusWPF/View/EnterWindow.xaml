@@ -9,21 +9,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Строка для изображения -->
             <RowDefinition Height="Auto"/>
-            <!-- Логин -->
             <RowDefinition Height="Auto"/>
-            <!-- Пароль -->
             <RowDefinition Height="Auto"/>
-            <!-- Имя -->
             <RowDefinition Height="Auto"/>
-            <!-- Фамилия -->
             <RowDefinition Height="Auto"/>
-            <!-- Кнопка Вход -->
             <RowDefinition Height="Auto"/>
-            <!-- Лейбл Регистрация -->
             <RowDefinition Height="Auto"/>
-            <!-- Лейбл Ошибка -->
         </Grid.RowDefinitions>
 
         <!-- Изображение -->
@@ -34,45 +26,25 @@
         <!-- Логин -->
         <Border Grid.Row="1" Margin="20" Background="#f0f0f0" 
                 BorderBrush="#3f51b5" BorderThickness="2" CornerRadius="5">
-            <TextBox Margin="0"
+            <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" 
                      materialDesign:HintAssist.Hint="Логин" 
                      Background="Transparent" Foreground="#333" 
                      BorderBrush="Transparent" FontSize="14" Padding="10"/>
         </Border>
 
         <!-- Пароль -->
-        <Border Grid.Row="2" Margin="20" Background="#f0f0f0" 
+        <!--<Border Grid.Row="2" Margin="20" Background="#f0f0f0" 
                 BorderBrush="#3f51b5" BorderThickness="2" CornerRadius="5">
-            <PasswordBox Margin="0"
-                         materialDesign:HintAssist.Hint="Пароль"
-                         Background="Transparent" Foreground="#333"
-                         BorderBrush="Transparent" FontSize="14" Padding="10"/>
-        </Border>
-
-        <!-- Имя -->
-        <Border Grid.Row="3" Margin="20" Background="#f0f0f0" 
-                BorderBrush="#3f51b5" BorderThickness="2" CornerRadius="5" 
-                x:Name="FirstName" Visibility="Collapsed">
-            <TextBox Margin="0"
-                     materialDesign:HintAssist.Hint="Имя" 
-                     Background="Transparent" Foreground="#333" 
-                     BorderBrush="Transparent" FontSize="14" Padding="10"/>
-        </Border>
-
-        <!-- Фамилия -->
-        <Border Grid.Row="4" Margin="20" Background="#f0f0f0" 
-                BorderBrush="#3f51b5" BorderThickness="2" CornerRadius="5" 
-                x:Name="LastName" Visibility="Collapsed">
-            <TextBox Margin="0"
-                     materialDesign:HintAssist.Hint="Фамилия" 
-                     Background="Transparent" Foreground="#333" 
-                     BorderBrush="Transparent" FontSize="14" Padding="10"/>
-        </Border>
+            <PasswordBox PasswordChanged="PasswordBox_PasswordChanged"
+                 materialDesign:HintAssist.Hint="Пароль"
+                 Background="Transparent" Foreground="#333"
+                 BorderBrush="Transparent" FontSize="14" Padding="10"/>
+        </Border>-->
 
         <!-- Кнопка Вход -->
         <Button Content="{Binding ButtonText}" Margin="30,20,30,30" 
                 Style="{DynamicResource MaterialDesignRaisedButton}" 
-                Grid.Row="5" Click="OnButtonClick"/>
+                Grid.Row="5" Command="{Binding LoginCommand}"/>
 
         <!-- Лейбл Регистрация -->
         <Label HorizontalAlignment="Center" 
@@ -81,25 +53,20 @@
                Margin="0,20,0,0" 
                Height="25" 
                VerticalAlignment="Top"
-               Cursor="Hand" 
-               MouseLeftButtonUp="OnRegisterLabelClick"
-               Name="RegisterLabel">
-            <TextBlock x:Name="RegisterTextBlock" Foreground="Blue">
-                <Run Text="{Binding LableText}" TextDecorations="Underline"/>
-            </TextBlock>
+               Cursor="Hand"
+               Foreground="Blue">
+            <TextBlock Text="{Binding LabelText}" TextDecorations="Underline" />
         </Label>
 
         <!-- Лейбл Ошибка -->
-        <Label HorizontalAlignment="Center" 
+        <!--<Label HorizontalAlignment="Center" 
                VerticalContentAlignment="Bottom" 
                Grid.Row="7" 
                Margin="0,20,0,0" 
                Height="25" 
                VerticalAlignment="Top"
-               Visibility="Collapsed">
-            <TextBlock Foreground="Red">
-                <Run Text="Ошибка"/>
-            </TextBlock>
-        </Label>
+               Foreground="Red" Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            <TextBlock Text="{Binding ErrorMessage}"/>
+        </Label>-->
     </Grid>
 </Window>

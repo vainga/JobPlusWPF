@@ -1,82 +1,33 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows;
+using JobPlusWPF.DBLogic;
+using JobPlusWPF.Model.Classes;
+using JobPlusWPF.Service;
+using JobPlusWPF.ViewModel;
+using System.Windows.Controls;
 
 namespace JobPlusWPF.View
 {
-    public partial class EnterWindow : Window, INotifyPropertyChanged
+    public partial class EnterWindow : Window
     {
-        private bool _isRegistering = false;
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public EnterWindow()
+        public EnterWindow(EnterViewModel enterViewModel)
         {
             InitializeComponent();
-            DataContext = this;
-            ButtonText = "Вход";
-            LableText = "Регистрация";
+
+            var DBContext = new JobPlusWPF.DBLogic.AppDbContext();
+
+            var userRepository = new JobPlusWPF.DBLogic.Repository<User>(DBContext);
+
+            var userService = new UserService(userRepository);
+
+            DataContext = new EnterViewModel(userService);
         }
 
+        //private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        //{
+        //    var passwordBox = (PasswordBox)sender;
+        //    var viewModel = (EnterViewModel)this.DataContext;
+        //    viewModel.Password = passwordBox.Password;
+        //}
 
-        private string _buttonText;
-        public string ButtonText
-        {
-            get => _buttonText;
-            set
-            {
-                if (_buttonText != value)
-                {
-                    _buttonText = value;
-                    OnPropertyChanged(nameof(ButtonText)); // Уведомление об изменении свойства
-                }
-            }
-        }
-
-        private string _lableText;
-        public string LableText
-        {
-            get => _lableText;
-            set {
-                if (_lableText != value)
-                {
-                    _lableText = value;
-                    OnPropertyChanged(nameof(LableText));
-                }
-            }
-        }
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void OnButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (_isRegistering)
-            {
-                // Логика для регистрации
-                //MessageBox.Show("Регистрация...");
-            }
-            else
-            {
-                // Логика для входа
-                //MessageBox.Show("Вход...");
-            }
-        }
-
-        private void OnRegisterLabelClick(object sender, RoutedEventArgs e)
-        {
-            _isRegistering = !_isRegistering;
-
-            ButtonText = _isRegistering ? "Регистрация" : "Вход";
-            LableText = _isRegistering ? "Вход" : "Регистрация";
-
-            FirstName.Visibility = _isRegistering ? Visibility.Visible : Visibility.Collapsed;
-            LastName.Visibility = _isRegistering ? Visibility.Visible : Visibility.Collapsed;
-
-            //RegisterTextBlock.Text = _isRegistering ? "Вход" : "Регистрация";
-            //RegisterTextBlock.TextDecorations = _isRegistering ? TextDecorations.Underline : null;
-            //RegisterTextBlock.Foreground = _isRegistering ? Brushes.Blue : Brushes.Blue;
-        }
     }
 }
