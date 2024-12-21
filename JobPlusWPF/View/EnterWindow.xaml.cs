@@ -9,7 +9,7 @@ namespace JobPlusWPF.View
 {
     public partial class EnterWindow : Window
     {
-        public EnterWindow(EnterViewModel enterViewModel)
+        public EnterWindow(/*EnterViewModel enterViewModel*/)
         {
             InitializeComponent();
 
