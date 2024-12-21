@@ -83,8 +83,16 @@ namespace JobPlusWPF.ViewModel
         {
             try
             {
-                var user = await _userService.LoginAsync(Login, Password);
-                ErrorMessage = "Вход выполнен успешно!";
+                if (ButtonText == "Вход")
+                {
+                    var user = await _userService.LoginAsync(Login, Password);
+                    ErrorMessage = "Вход выполнен успешно!";
+                }
+                else if (ButtonText == "Регистрация")
+                {
+                    await _userService.RegisterUserAsync(Login, Password);
+                    SwitchMode();
+                }
             }
             catch (Exception ex)
             {

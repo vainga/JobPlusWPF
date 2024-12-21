@@ -25,6 +25,10 @@ namespace JobPlusWPF.DBLogic
             optionsBuilder.UseNpgsql("Host=localhost;Database=JobPlusDB;Username=postgres;Password=20110409");
         }
 
+        public AppDbContext()
+        {
+        }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

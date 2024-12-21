@@ -48,14 +48,18 @@
 
         <!-- Лейбл Регистрация -->
         <Label HorizontalAlignment="Center" 
-               VerticalContentAlignment="Bottom" 
-               Grid.Row="6" 
-               Margin="0,20,0,0" 
-               Height="25" 
-               VerticalAlignment="Top"
-               Cursor="Hand"
-               Foreground="Blue">
-            <TextBlock Text="{Binding LabelText}" TextDecorations="Underline" />
+           VerticalContentAlignment="Bottom" 
+           Grid.Row="6" 
+           Margin="0,20,0,0" 
+           Height="25" 
+           VerticalAlignment="Top"
+           Cursor="Hand"
+           Foreground="Blue">
+                <TextBlock Text="{Binding LabelText}" TextDecorations="Underline">
+                    <TextBlock.InputBindings>
+                        <MouseBinding Command="{Binding SwitchModeCommand}" Gesture="LeftClick" />
+                    </TextBlock.InputBindings>
+                </TextBlock>
         </Label>
 
         <!-- Лейбл Ошибка -->
