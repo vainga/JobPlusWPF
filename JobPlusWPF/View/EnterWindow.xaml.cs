@@ -17,12 +17,12 @@ namespace JobPlusWPF.View
             DataContext = viewModel;
         }
 
-        //private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
-        //{
-        //    var passwordBox = (PasswordBox)sender;
-        //    var viewModel = (EnterViewModel)this.DataContext;
-        //    viewModel.Password = passwordBox.Password;
-        //}
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            var passwordBox = (PasswordBox)sender;
+            var viewModel = (EnterViewModel)this.DataContext;
+            viewModel.Password = passwordBox.Password;
+        }
 
     }
 }
