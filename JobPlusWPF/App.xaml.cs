@@ -44,7 +44,7 @@ namespace JobPlusWPF
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
-            services.AddSingleton<MainWindow>();
+            services.AddTransient<MainWindow>();
 
             // Строим контейнер зависимостей
             _serviceProvider = services.BuildServiceProvider();
@@ -72,6 +72,7 @@ namespace JobPlusWPF
             var enterWindow = _serviceProvider.GetRequiredService<EnterWindow>();
             enterWindow.Show();
         }
+
 
         protected override void OnExit(ExitEventArgs e)
         {

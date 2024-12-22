@@ -20,16 +20,17 @@ namespace JobPlusWPF.Model.Classes
 
         public void NavigateTo<TWindow>() where TWindow : Window
         {
-            // Закрываем текущее активное окно
-            Application.Current.MainWindow?.Close();
+            var previousWindow = Application.Current.MainWindow;
 
-            // Получаем окно через DI
             var window = _serviceProvider.GetRequiredService<TWindow>();
 
-            // Устанавливаем его как главное окно и показываем
             Application.Current.MainWindow = window;
+
             window.Show();
+
+            previousWindow?.Close();
         }
+
 
         public void CloseCurrentWindow()
         {

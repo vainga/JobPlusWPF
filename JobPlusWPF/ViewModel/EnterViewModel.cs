@@ -95,6 +95,7 @@ namespace JobPlusWPF.ViewModel
 
                     if (user != null)
                     {
+                        // Навигация после успешного входа
                         _navigationService.NavigateTo<MainWindow>();
                     }
                     else
