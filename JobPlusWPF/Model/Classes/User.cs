@@ -16,21 +16,22 @@ namespace JobPlusWPF.Model.Classes
     {
         public int Id { get; private set; }
         public string Login { get; private set; }
-        public string Password { get; private set; }
+        private string Password { get;  set; }
         public Role Role { get; private set; }
+
+        private string salt = BCrypt.Net.BCrypt.GenerateSalt(6);
 
         public User(string login, string password, Role role = Role.User)
         {
+            string salt = BCrypt.Net.BCrypt.GenerateSalt(6);
             Login = login;
-            //Password = BCrypt.Net.BCrypt.HashPassword(password);
-            Password = password;
+            Password = BCrypt.Net.BCrypt.HashPassword(password, salt);
             Role = role;
         }
 
         public bool VerifyPassword(string password)
         {
-            //return BCrypt.Net.BCrypt.Verify(password, Password);
-            return Password == password;
+            return BCrypt.Net.BCrypt.Verify(password, Password);
         }
 
         private void UpdatePassword(string newPassword)
