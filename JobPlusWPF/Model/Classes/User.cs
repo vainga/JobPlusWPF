@@ -22,25 +22,26 @@ namespace JobPlusWPF.Model.Classes
         public User(string login, string password, Role role = Role.User)
         {
             Login = login;
-            Password = BCrypt.Net.BCrypt.HashPassword(password);
+            //Password = BCrypt.Net.BCrypt.HashPassword(password);
+            Password = password;
             Role = role;
         }
 
         public bool VerifyPassword(string password)
         {
-            return BCrypt.Net.BCrypt.Verify(password, Password);
+            //return BCrypt.Net.BCrypt.Verify(password, Password);
+            return Password == password;
         }
 
-        public void UpdatePassword(string newPassword)
+        private void UpdatePassword(string newPassword)
         {
             Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
         }
 
-        public void UpdateRole(Role newRole)
+        private void UpdateRole(Role newRole)
         {
             Role = newRole;
         }
-
 
     }
 }

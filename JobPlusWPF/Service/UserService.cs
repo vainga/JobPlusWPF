@@ -23,14 +23,14 @@ namespace JobPlusWPF.Service
             var existingUser = await _userRepository.FindAsync(u => u.Login == login);
             if (!existingUser.Any())
             {
-                throw new InvalidOperationException("User with this login does not exist.");
+                throw new InvalidOperationException("Пользователь с этим логином не существует");
             }
 
             var user = existingUser.First();
 
             if (!user.VerifyPassword(password))
             {
-                throw new InvalidOperationException("Invalid password.");
+                throw new InvalidOperationException("Неверный пароль");
             }
 
             return user;
@@ -41,7 +41,7 @@ namespace JobPlusWPF.Service
             var existingUser = await _userRepository.FindAsync(u => u.Login == login);
             if (existingUser.Any())
             {
-                throw new InvalidOperationException("User with this login already exists.");
+                throw new InvalidOperationException("Пользователь с этим логином уже существует");
             }
 
             ValidateLogin(login);
@@ -59,35 +59,35 @@ namespace JobPlusWPF.Service
             // Проверка на наличие пробела
             if (login.Contains(" "))
             {
-                throw new InvalidOperationException("Login cannot contain spaces.");
+                throw new InvalidOperationException("Логин не должен содержать пробелы");
             }
 
             // Проверка на латинские символы
             if (!login.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                throw new InvalidOperationException("Login can only contain Latin letters, digits, and underscores.");
+                throw new InvalidOperationException("Логин может содержать только латинские буквы, цифры и символы подчеркивания");
             }
         }
 
         private void ValidatePassword(string password)
         {
             // Проверка на минимальную длину пароля
-            if (password.Length < 8)
-            {
-                throw new InvalidOperationException("Password must be at least 8 characters long.");
-            }
+            //if (password.Length < 8)
+            //{
+            //    throw new InvalidOperationException("Длина пароля должна составлять не менее 8 символов");
+            //}
 
             // Проверка на наличие пробела
             if (password.Contains(" "))
             {
-                throw new InvalidOperationException("Password cannot contain spaces.");
+                throw new InvalidOperationException("Пароль не должен содержать пробелов");
             }
 
             // Проверка на латинские символы
-            if (!password.Any(c => char.IsLetter(c) && char.IsLower(c)) || !password.Any(c => char.IsLetter(c) && char.IsUpper(c)))
-            {
-                throw new InvalidOperationException("Password must contain both uppercase and lowercase Latin letters.");
-            }
+            //if (!password.Any(c => char.IsLetter(c) && char.IsLower(c)) || !password.Any(c => char.IsLetter(c) && char.IsUpper(c)))
+            //{
+            //    throw new InvalidOperationException("Пароль должен содержать как заглавные, так и строчные латинские буквы");
+            //}
 
         }
 

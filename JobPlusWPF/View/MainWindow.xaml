@@ -4,9 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JobPlusWPF"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="800" Width="1600">
 
-    </Grid>
+    <Window.Resources>
+        <!-- MaterialDesign Resource Dictionary -->
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/Generic.xaml"/>
+    </Window.Resources>
+
+    <DockPanel>
+
+        <!-- Меню с уменьшенной высотой -->
+        <Menu DockPanel.Dock="Top" FontSize="12" Height="30" Background="#F5F5F5">
+            <MenuItem Header="Файл" FontSize="12" VerticalAlignment="Center">
+                <MenuItem Header="Выход" FontSize="12"/>
+            </MenuItem>
+            <MenuItem Header="Справка" FontSize="12" VerticalAlignment="Center">
+                <MenuItem Header="О программе" FontSize="12"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Панель инструментов с кнопками и поиском -->
+        <Border DockPanel.Dock="Top" Background="#e9ecef" Margin="0,0,0,10" CornerRadius="5">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <!-- First column for buttons -->
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Second column for search (centered) -->
+                    <ColumnDefinition Width="*" />
+                    <!-- Third column for buttons (right-aligned) -->
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Кнопки добавления, изменения и удаления (left column) -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0">
+                    <Button Content="Добавить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
+                    <Button Content="Изменить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
+                    <Button Content="Удалить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
+                </StackPanel>
+
+                <!-- Центрированный поиск -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="3">
+                    <TextBox Width="200" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Поиск</materialDesign:HintAssist.Hint>
+                    </TextBox>
+                    <Button Width="40" Height="40" Margin="5" VerticalAlignment="Center" Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                        <materialDesign:PackIcon Kind="Search" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid для отображения данных -->
+        <DataGrid Name="DataGrid" DockPanel.Dock="Bottom" Margin="10" AutoGenerateColumns="True" Background="#e9ecef"/>
+    </DockPanel>
 </Window>

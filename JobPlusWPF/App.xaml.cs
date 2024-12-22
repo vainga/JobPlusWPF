@@ -1,5 +1,6 @@
 ﻿using JobPlusWPF.DBLogic;
 using JobPlusWPF.Model.Classes;
+using JobPlusWPF.Model.Interfaces;
 using JobPlusWPF.Service;
 using JobPlusWPF.View;
 using JobPlusWPF.ViewModel;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
+using System.Windows.Navigation;
 
 namespace JobPlusWPF
 {
@@ -33,11 +35,16 @@ namespace JobPlusWPF
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<UserService>();
 
+            // Регистрация навигатора
+            services.AddSingleton<INavigator, Navigator>();
+
             // Регистрация ViewModel
             services.AddScoped<EnterViewModel>();
+            //services.AddScoped<MainWindowViewModel>();
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
+            services.AddSingleton<MainWindow>();
 
             // Строим контейнер зависимостей
             _serviceProvider = services.BuildServiceProvider();
@@ -49,6 +56,17 @@ namespace JobPlusWPF
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                // Выполнение миграций (если нужно)
+                dbContext.Database.Migrate();
+
+                // Заполнение начальных данных
+                dbContext.SeedAdmin();
+            }
 
             // Создаем окно и передаем ViewModel через DI
             var enterWindow = _serviceProvider.GetRequiredService<EnterWindow>();

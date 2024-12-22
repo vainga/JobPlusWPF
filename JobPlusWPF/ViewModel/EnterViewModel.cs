@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Navigation;
+using JobPlusWPF.Model.Interfaces;
 using JobPlusWPF.Service;
 
 namespace JobPlusWPF.ViewModel
@@ -9,6 +11,9 @@ namespace JobPlusWPF.ViewModel
     public class EnterViewModel : INotifyPropertyChanged
     {
         private readonly UserService _userService;
+        private readonly INavigator _navigationService;
+
+
         private string _login;
         private string _password;
         private string _errorMessage;
@@ -71,10 +76,11 @@ namespace JobPlusWPF.ViewModel
         public ICommand SwitchModeCommand { get; }
 
 
-        public EnterViewModel(UserService userService)
+        public EnterViewModel(UserService userService, INavigator navigationService)
         {
             _userService = userService;
-            LoginCommand = new RelayCommand(async _ => await ExecuteLoginAsync(), _ => CanExecuteLogin());
+            _navigationService = navigationService;
+            LoginCommand = new RelayCommand(async _ => await ExecuteLoginAsync());
             SwitchModeCommand = new RelayCommand(_ => SwitchMode());
         }
 
@@ -86,11 +92,20 @@ namespace JobPlusWPF.ViewModel
                 if (ButtonText == "Вход")
                 {
                     var user = await _userService.LoginAsync(Login, Password);
-                    ErrorMessage = "Вход выполнен успешно!";
+
+                    if (user != null)
+                    {
+                        _navigationService.NavigateTo<MainWindow>();
+                    }
+                    else
+                    {
+                        ErrorMessage = "Неверные учетные данные";
+                    }
                 }
                 else if (ButtonText == "Регистрация")
                 {
                     await _userService.RegisterUserAsync(Login, Password);
+                    ErrorMessage = "Регистрация прошла успешно. Теперь выполните вход.";
                     SwitchMode();
                 }
             }
@@ -99,6 +114,7 @@ namespace JobPlusWPF.ViewModel
                 ErrorMessage = ex.Message;
             }
         }
+
 
         private bool CanExecuteLogin()
         {

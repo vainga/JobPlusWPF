@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobPlusWPF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241221202317_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241222080023_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
