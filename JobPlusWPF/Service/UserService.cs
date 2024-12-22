@@ -28,6 +28,8 @@ namespace JobPlusWPF.Service
 
             var user = existingUser.First();
 
+            var storedPasswordHash = user.Password;
+
             if (!user.VerifyPassword(password))
             {
                 throw new InvalidOperationException("Неверный пароль");
@@ -48,7 +50,9 @@ namespace JobPlusWPF.Service
 
             ValidatePassword(password);
 
-            var user = new User(login, password);
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var user = new User(login, hashedPassword);
 
             await _userRepository.AddAsync(user);
         } 
