@@ -1,4 +1,7 @@
-﻿using System;
+﻿using JobPlusWPF.ViewModel;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +22,19 @@ namespace JobPlusWPF.View
     /// </summary>
     public partial class JobSeekerAddWindow : Window
     {
-        public JobSeekerAddWindow()
+   
+        public JobSeekerAddWindow(JobSeekerAddViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
+
+        }
+
+        private void OnPhotoBorderClick(object sender, RoutedEventArgs e)
+        {
+            //// Запускаем команду выбора фото при клике на область для фото
+            //var viewModel = (JobSeekerAddViewModel)DataContext;
+            ////viewModel.LoadPhotoCommand.Execute(null);
         }
     }
 }

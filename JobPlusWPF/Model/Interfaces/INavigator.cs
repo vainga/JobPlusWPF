@@ -11,5 +11,7 @@ namespace JobPlusWPF.Model.Interfaces
     {
         void NavigateTo<TWindow>() where TWindow : Window;
         void CloseCurrentWindow();
+        void ShowDialog<T>() where T : Window;
+        void CloseWindow<T>() where T : Window;
     }
 }

@@ -31,11 +31,27 @@ namespace JobPlusWPF.Model.Classes
             previousWindow?.Close();
         }
 
+        public void ShowDialog<T>() where T : Window
+        {
+            var window = _serviceProvider.GetService<T>();
+            if (window != null)
+            {
+                window.Owner = Application.Current.MainWindow; // Установка владельца
+                window.ShowDialog(); // Открытие окна в модальном режиме
+            }
+        }
 
         public void CloseCurrentWindow()
         {
             Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)?.Close();
         }
+
+        public void CloseWindow<T>() where T : Window
+        {
+            var window = Application.Current.Windows.OfType<T>().FirstOrDefault();
+            window?.Close();
+        }
+
     }
 
 }

@@ -40,11 +40,13 @@ namespace JobPlusWPF
 
             // Регистрация ViewModel
             services.AddScoped<EnterViewModel>();
-            //services.AddScoped<MainWindowViewModel>();
+            services.AddScoped<MainViewModel>();
+            services.AddScoped<JobSeekerAddViewModel>();
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
             services.AddTransient<MainWindow>();
+            services.AddTransient<JobSeekerAddWindow>();
 
             // Строим контейнер зависимостей
             _serviceProvider = services.BuildServiceProvider();

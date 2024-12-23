@@ -8,100 +8,105 @@
         mc:Ignorable="d"
         Title="Добавить соискателя" Height="Auto" Width="600">
     <Window.Resources>
-        <!-- MaterialDesign Resource Dictionary -->
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/Generic.xaml"/>
     </Window.Resources>
 
-    <Grid Margin="10">
-        <!-- Outer StackPanel to center content -->
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center">
+    <!-- ScrollViewer добавлен для прокрутки -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid Margin="10">
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center">
+                <!-- Раздел для фото -->
+                <Border Name="PhotoBorder" Width="120" Height="120" Margin="0,10,0,0" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" MouseLeftButtonDown="OnPhotoBorderClick">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image Name="PhotoImage" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" Visibility="Collapsed"/>
+                        <materialDesign:PackIcon Name="CameraIcon" Kind="Camera" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock FontSize="12" Text="Загрузить фото" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black"/>
+                    </StackPanel>
+                </Border>
 
-            <!-- Photo Section (square) -->
-            <Button Name="PhotoButton" Width="120" Height="120" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFlatButton}" Background="#D3D3D3" HorizontalAlignment="Center">
-                <StackPanel VerticalAlignment="Center">
-                    <materialDesign:PackIcon Kind="Camera" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <TextBlock FontSize="12" Text="Загрузить фото" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black"/>
+                <!-- Имя и фамилия -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,20,0,0">
+                    <TextBox Name="NameTextBox" Width="200" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Имя</materialDesign:HintAssist.Hint>
+                    </TextBox>
+                    <TextBox Name="SurnameTextBox" Width="200" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Фамилия</materialDesign:HintAssist.Hint>
+                    </TextBox>
                 </StackPanel>
-            </Button>
 
-            <!-- StackPanel to align Name and Surname to the right of the photo -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,20,0,0">
-                <TextBox Name="NameTextBox" Width="180" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                    <materialDesign:HintAssist.Hint>Имя</materialDesign:HintAssist.Hint>
+                <!-- Поля для ввода данных -->
+                <TextBox Name="AgeTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <materialDesign:HintAssist.Hint>Возраст</materialDesign:HintAssist.Hint>
                 </TextBox>
-                <TextBox Name="SurnameTextBox" Width="180" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                    <materialDesign:HintAssist.Hint>Фамилия</materialDesign:HintAssist.Hint>
+
+                <TextBox Name="PassportNumberTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <materialDesign:HintAssist.Hint>Номер паспорта</materialDesign:HintAssist.Hint>
                 </TextBox>
+
+                <DatePicker Name="PassportIssueDate" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                    <materialDesign:HintAssist.Hint>Дата выдачи паспорта</materialDesign:HintAssist.Hint>
+                </DatePicker>
+
+                <TextBox Name="PassportIssuedByTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <materialDesign:HintAssist.Hint>Кем выдан</materialDesign:HintAssist.Hint>
+                </TextBox>
+
+                <!-- Улица и город -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBox Name="StreetTextBox" Width="195" Margin="0,10,10,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Улица</materialDesign:HintAssist.Hint>
+                    </TextBox>
+                    <TextBox Name="CityTextBox" Width="195" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Город</materialDesign:HintAssist.Hint>
+                    </TextBox>
+                </StackPanel>
+
+                <TextBox Name="PhoneTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <materialDesign:HintAssist.Hint>Телефон</materialDesign:HintAssist.Hint>
+                </TextBox>
+
+                <ComboBox Name="EducationLevelComboBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                    <materialDesign:HintAssist.Hint>Уровень образования</materialDesign:HintAssist.Hint>
+                </ComboBox>
+
+                <TextBox Name="InstitutionNameTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <materialDesign:HintAssist.Hint>Учебное заведение</materialDesign:HintAssist.Hint>
+                </TextBox>
+
+                <TextBox Name="SpecialtyTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <materialDesign:HintAssist.Hint>Специальность</materialDesign:HintAssist.Hint>
+                </TextBox>
+
+                <!-- Опыт работы -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <TextBox Name="WorkExperienceYearsTextBox" Width="200" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Лет</materialDesign:HintAssist.Hint>
+                    </TextBox>
+                    <TextBox Name="WorkExperienceMonthsTextBox" Width="200" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>Месяцев</materialDesign:HintAssist.Hint>
+                    </TextBox>
+                </StackPanel>
+
+                <DatePicker Name="RegistrationDate" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                    <materialDesign:HintAssist.Hint>Дата регистрации</materialDesign:HintAssist.Hint>
+                </DatePicker>
+
+                <!-- Кнопка загрузки документа -->
+                <Button Name="EducationDocumentButton" Width="69" Height="40" Margin="10,10,0,0" Style="{StaticResource MaterialDesignFlatButton}" Background="#D3D3D3" HorizontalAlignment="Left" Command="{Binding LoadEducationDocumentCommand}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <materialDesign:PackIcon Kind="Attachment" Width="15" Height="15" />
+                    </StackPanel>
+                </Button>
+
+                <!-- Текст, отображающий имя прикрепленного файла -->
+                <TextBlock Text="{Binding EducationDocumentScan, StringFormat='Прикрепленный файл: {0}'}" Margin="10,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+                <!-- Кнопки для сохранения и отмены -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                    <Button Content="Сохранить" Width="105" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
+                    <Button Content="Отмена" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding CancelCommand}" />
+                </StackPanel>
             </StackPanel>
-
-            <!-- Other Fields Centered -->
-            <TextBox Name="AgeTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Возраст</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <TextBox Name="PassportNumberTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Номер паспорта</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <DatePicker Name="PassportIssueDate" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
-                <materialDesign:HintAssist.Hint>Дата выдачи паспорта</materialDesign:HintAssist.Hint>
-            </DatePicker>
-
-            <TextBox Name="PassportIssuedByTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Кем выдан</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBox Name="StreetTextBox" Width="195" Margin="0,10,10,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                    <materialDesign:HintAssist.Hint>Улица</materialDesign:HintAssist.Hint>
-                </TextBox>
-                <TextBox Name="CityTextBox" Width="195" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                    <materialDesign:HintAssist.Hint>Город</materialDesign:HintAssist.Hint>
-                </TextBox>
-            </StackPanel>
-
-            <TextBox Name="PhoneTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Телефон</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <TextBox Name="PhotoTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Фото (URL)</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <ComboBox Name="EducationLevelComboBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                <materialDesign:HintAssist.Hint>Уровень образования</materialDesign:HintAssist.Hint>
-            </ComboBox>
-
-            <TextBox Name="InstitutionNameTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Учебное заведение</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <TextBox Name="EducationDocumentScanTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Скан документа об образовании (URL)</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <TextBox Name="SpecialtyTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Специальность</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <TextBox Name="WorkExperienceTextBox" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <materialDesign:HintAssist.Hint>Опыт работы</materialDesign:HintAssist.Hint>
-            </TextBox>
-
-            <DatePicker Name="RegistrationDate" Width="400" Margin="0,10,0,0" Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
-                <materialDesign:HintAssist.Hint>Дата регистрации</materialDesign:HintAssist.Hint>
-            </DatePicker>
-
-            <!-- Error Message Label (Initially Invisible) -->
-            <Label Name="ErrorMessageLabel" Foreground="Red" Visibility="Collapsed" FontSize="14" Margin="0,10,0,10">
-                <TextBlock Name="ErrorMessageTextBlock" />
-            </Label>
-
-            <!-- Кнопки для сохранения и отмены -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                <Button Content="Сохранить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
-                <Button Content="Отмена" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
-            </StackPanel>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </Window>
