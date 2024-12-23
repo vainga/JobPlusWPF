@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace JobPlusWPF.Service
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly JobPlusWPF.DBLogic.IRepository<User> _userRepository;
 

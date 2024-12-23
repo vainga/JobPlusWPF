@@ -10,7 +10,7 @@ namespace JobPlusWPF.ViewModel
 {
     public class EnterViewModel : INotifyPropertyChanged
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
         private readonly INavigator _navigationService;
 
 
@@ -76,7 +76,7 @@ namespace JobPlusWPF.ViewModel
         public ICommand SwitchModeCommand { get; }
 
 
-        public EnterViewModel(UserService userService, INavigator navigationService)
+        public EnterViewModel(IUserService userService, INavigator navigationService)
         {
             _userService = userService;
             _navigationService = navigationService;

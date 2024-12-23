@@ -33,7 +33,7 @@ namespace JobPlusWPF
 
             // Регистрация репозиториев и сервисов
             services.AddScoped<IRepository<User>, Repository<User>>();
-            services.AddScoped<UserService>();
+            services.AddScoped<IUserService,UserService>();
 
             // Регистрация навигатора
             services.AddSingleton<INavigator, Navigator>();
@@ -66,6 +66,7 @@ namespace JobPlusWPF
 
                 // Заполнение начальных данных
                 dbContext.SeedAdmin();
+                dbContext.SeedEducationLevels();
             }
 
             // Создаем окно и передаем ViewModel через DI
