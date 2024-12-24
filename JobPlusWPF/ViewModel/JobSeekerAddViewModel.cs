@@ -15,6 +15,7 @@ namespace JobPlusWPF.ViewModel
     {
         private readonly INavigator _navigator;
         private readonly IJobSeekerService _jobSeekerService;
+        private readonly ICurrentUserService _currentUserService;
 
         private string _name;
         private string _surname;
@@ -439,6 +440,9 @@ namespace JobPlusWPF.ViewModel
 
         private async Task SaveJobSeeker()
         {
+            // Получаем userId с помощью ICurrentUserService
+            int userId = _currentUserService.GetCurrentUserId();
+
             // Проверяем и добавляем город
             if (City == null || string.IsNullOrEmpty(City.Name))
             {
@@ -486,13 +490,12 @@ namespace JobPlusWPF.ViewModel
                 EducationDocumentScan,
                 Specialty,
                 WorkExperienceYears * 12 + WorkExperienceMonths, // Переводим опыт работы в месяцы
-                RegistrationDate
+                RegistrationDate,
+                userId  // Передаем userId, полученный из ICurrentUserService
             );
 
             await _jobSeekerService.AddJobSeekerAsync(newJobSeeker);
         }
-
-
 
         private void ClearFields()
         {
@@ -521,10 +524,11 @@ namespace JobPlusWPF.ViewModel
             EducationLevels = await _jobSeekerService.GetEducationLevelsAsync();
         }
 
-        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService)
+        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, ICurrentUserService currentUserService)
         {
             _navigator = navigator;
             _jobSeekerService = jobSeekerService;
+            _currentUserService = currentUserService;
             CancelCommand = new RelayCommand(Cancel);
             SelectPhotoCommand = new RelayCommand(SelectPhoto);
             SaveCommand = new RelayCommand(Save);

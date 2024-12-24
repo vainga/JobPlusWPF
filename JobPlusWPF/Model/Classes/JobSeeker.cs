@@ -34,7 +34,7 @@ namespace JobPlusWPF.Model.Classes
 
         public JobSeeker(string name, string surname, int age, string passportNumber, DateTime passportIssueDate, string passportIssuedBy,
                      string phone, string photo, int cityId, int streetId, int educationLevelId, string institution,
-                     string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate)
+                     string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate, int userId)
         {
             Name = name;
             Surname = surname;
@@ -52,6 +52,7 @@ namespace JobPlusWPF.Model.Classes
             Specialty = specialty;
             WorkExperience = workExperience;
             RegistrationDate = registrationDate;
+            UserId = userId;
         }
     }
 }
