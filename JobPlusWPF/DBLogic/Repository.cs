@@ -63,5 +63,11 @@ namespace JobPlusWPF.DBLogic
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<T> FindByNameAsync(string name)
+        {
+            return await _dbSet.FirstOrDefaultAsync(entity => EF.Property<string>(entity, "Name") == name);
+        }
+
     }
 }

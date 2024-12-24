@@ -10,11 +10,12 @@ namespace JobPlusWPF.Service
     public class UserService : IUserService
     {
         private readonly JobPlusWPF.DBLogic.IRepository<User> _userRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-
-        public UserService(JobPlusWPF.DBLogic.IRepository<User> userRepository)
+        public UserService(JobPlusWPF.DBLogic.IRepository<User> userRepository, ICurrentUserService currentUserService)
         {
             _userRepository = userRepository;
+            _currentUserService = currentUserService;
         }
 
 
@@ -34,6 +35,8 @@ namespace JobPlusWPF.Service
             {
                 throw new InvalidOperationException("Неверный пароль");
             }
+
+            _currentUserService.SetCurrentUser(user);
 
             return user;
         }

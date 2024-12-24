@@ -29,12 +29,5 @@ namespace JobPlusWPF.View
             DataContext = viewModel;
 
         }
-
-        private void OnPhotoBorderClick(object sender, RoutedEventArgs e)
-        {
-            //// Запускаем команду выбора фото при клике на область для фото
-            //var viewModel = (JobSeekerAddViewModel)DataContext;
-            ////viewModel.LoadPhotoCommand.Execute(null);
-        }
     }
 }

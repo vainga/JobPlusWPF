@@ -3,6 +3,7 @@ using System;
 using JobPlusWPF.DBLogic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobPlusWPF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241224062433_AddUserId")]
+    partial class AddUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +48,6 @@ namespace JobPlusWPF.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("JobSeekerId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Benefits");
                 });
@@ -105,8 +106,6 @@ namespace JobPlusWPF.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Employers");
                 });
@@ -187,8 +186,6 @@ namespace JobPlusWPF.Migrations
 
                     b.HasIndex("StreetId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("JobSeekers");
                 });
 
@@ -263,26 +260,7 @@ namespace JobPlusWPF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobPlusWPF.Model.Classes.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("JobSeeker");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("JobPlusWPF.Model.Classes.Employer", b =>
-                {
-                    b.HasOne("JobPlusWPF.Model.Classes.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobPlusWPF.Model.Classes.JobSeeker", b =>
@@ -305,19 +283,11 @@ namespace JobPlusWPF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobPlusWPF.Model.Classes.User", "User")
-                        .WithMany("JobSeekers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("City");
 
                     b.Navigation("EducationLevel");
 
                     b.Navigation("Street");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobPlusWPF.Model.Classes.Vacancy", b =>
@@ -347,11 +317,6 @@ namespace JobPlusWPF.Migrations
                 });
 
             modelBuilder.Entity("JobPlusWPF.Model.Classes.StreetDirectory", b =>
-                {
-                    b.Navigation("JobSeekers");
-                });
-
-            modelBuilder.Entity("JobPlusWPF.Model.Classes.User", b =>
                 {
                     b.Navigation("JobSeekers");
                 });

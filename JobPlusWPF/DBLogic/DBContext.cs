@@ -56,6 +56,11 @@ namespace JobPlusWPF.DBLogic
             modelBuilder.Entity<User>()
                 .Property(u => u.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<JobSeeker>()
+                .HasOne(j => j.User)
+                .WithMany(u => u.JobSeekers)
+                .HasForeignKey(j => j.UserId);
         }
 
         public void SeedEducationLevels()

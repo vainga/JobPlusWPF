@@ -13,10 +13,14 @@ namespace JobPlusWPF.Model.Classes
         public string Address { get; private set; }
         public ICollection<Vacancy> Vacancies { get; private set; } = new List<Vacancy>();
 
-        public Employer(string name, string address)
+        public int UserId { get; private set; }
+        public User User { get; private set; }
+
+        public Employer(string name, string address, int userId)
         {
             Name = name;
             Address = address;
+            UserId = userId;
         }
     }
 

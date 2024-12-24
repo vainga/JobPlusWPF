@@ -29,9 +29,12 @@ namespace JobPlusWPF.Model.Classes
         public int WorkExperience { get; private set; }
         public DateTime RegistrationDate { get; private set; }
 
+        public int UserId { get; private set; }
+        public User User { get; private set; }
+
         public JobSeeker(string name, string surname, int age, string passportNumber, DateTime passportIssueDate, string passportIssuedBy,
-                         string phone, string photo, int cityId, int streetId, int educationLevelId, string institution,
-                         string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate)
+                     string phone, string photo, int cityId, int streetId, int educationLevelId, string institution,
+                     string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate)
         {
             Name = name;
             Surname = surname;

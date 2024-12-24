@@ -33,7 +33,14 @@ namespace JobPlusWPF
 
             // Регистрация репозиториев и сервисов
             services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IRepository<JobSeeker>, Repository<JobSeeker>>();
+            services.AddScoped<IRepository<CityDirectory>, Repository<CityDirectory>>();
+            services.AddScoped<IRepository<StreetDirectory>, Repository<StreetDirectory>>();
+            services.AddScoped<IRepository<EducationLevel>, Repository<EducationLevel>>();
+
             services.AddScoped<IUserService,UserService>();
+            services.AddScoped<IJobSeekerService, JobSeekerService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             // Регистрация навигатора
             services.AddSingleton<INavigator, Navigator>();
@@ -55,26 +62,31 @@ namespace JobPlusWPF
             Services = _serviceProvider; // Присваиваем свойству значение _serviceProvider
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            using (var scope = _serviceProvider.CreateScope())
+            // Выполнение миграций и начальных данных в фоновом потоке
+            await Task.Run(() =>
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                // Выполнение миграций (если нужно)
-                dbContext.Database.Migrate();
+                    // Выполнение миграций (если нужно)
+                    dbContext.Database.Migrate();
 
-                // Заполнение начальных данных
-                dbContext.SeedAdmin();
-                dbContext.SeedEducationLevels();
-            }
+                    // Заполнение начальных данных
+                    dbContext.SeedAdmin();
+                    dbContext.SeedEducationLevels();
+                }
+            });
 
             // Создаем окно и передаем ViewModel через DI
             var enterWindow = _serviceProvider.GetRequiredService<EnterWindow>();
             enterWindow.Show();
         }
+
 
 
         protected override void OnExit(ExitEventArgs e)

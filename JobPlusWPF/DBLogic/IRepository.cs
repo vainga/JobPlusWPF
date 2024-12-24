@@ -18,5 +18,7 @@ namespace JobPlusWPF.DBLogic
         Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
         Task UpdateAsync(T entity);
+
+        Task<T> FindByNameAsync(string name);
     }
 }
