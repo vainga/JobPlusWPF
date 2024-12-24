@@ -13,6 +13,8 @@ namespace JobPlusWPF.ViewModel
 {
     public class JobSeekerAddViewModel : INotifyPropertyChanged
     {
+        public event Action JobSeekerAdded;
+
         private readonly INavigator _navigator;
         private readonly IJobSeekerService _jobSeekerService;
         private readonly ICurrentUserService _currentUserService;
@@ -402,7 +404,9 @@ namespace JobPlusWPF.ViewModel
                 ClearFields();
 
                 MessageBox.Show("Сохранение прошло успешно");
+                JobSeekerAdded?.Invoke();
                 _navigator.CloseWindow<JobSeekerAddWindow>();
+
             }
             catch (Exception ex)
             {
@@ -528,6 +532,7 @@ namespace JobPlusWPF.ViewModel
 
             LoadEducationLevels();
         }
+
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

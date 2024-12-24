@@ -9,16 +9,29 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.IO;
+using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
-public class MainViewModel : INotifyPropertyChanged
+namespace JobPlusWPF.ViewModel
 {
-    private readonly INavigator _navigationService;
-    private string _selectedRole;
-    private ObservableCollection<JobSeeker> _jobSeekers;
+    public class MainViewModel : INotifyPropertyChanged
+    {
+        private readonly INavigator _navigationService;
+        private readonly IServiceProvider _serviceProvider;
 
-    public ICommand DownloadCommand { get; }
+        private readonly IRepository<JobSeeker> _jobSeekerRepository;
 
-    public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
+        private string _selectedRole;
+        private ObservableCollection<JobSeeker> _jobSeekers;
+        private UserControl _currentUserControl;
+
+        public ICommand DownloadCommand { get; }
+        public ICommand RefreshCommand { get; }
+        public ICommand AddCommand { get; }
+
+
+        public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
     {
         "Работодатели",
         "Вакансии",
@@ -26,96 +39,127 @@ public class MainViewModel : INotifyPropertyChanged
         "Совпадения"
     };
 
-    public string SelectedRole
-    {
-        get => _selectedRole;
-        set
+        public string SelectedRole
         {
-            if (_selectedRole != value)
+            get => _selectedRole;
+            set
             {
-                _selectedRole = value;
+                if (_selectedRole != value)
+                {
+                    _selectedRole = value;
+                    OnPropertyChanged();
+                    LoadUserControl(); // Загружаем нужный UserControl
+                }
+            }
+        }
+
+        public ObservableCollection<JobSeeker> JobSeekers
+        {
+            get => _jobSeekers ??= new ObservableCollection<JobSeeker>(); 
+            set
+            {
+                _jobSeekers = value;
                 OnPropertyChanged();
-                LoadJobSeekers(); // Load JobSeekers when SelectedRole changes
             }
         }
-    }
 
-    public ObservableCollection<JobSeeker> JobSeekers
-    {
-        get => _jobSeekers;
-        set
+
+        public UserControl CurrentUserControl
         {
-            _jobSeekers = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public ICommand AddCommand { get; }
-
-    private readonly AppDbContext _dbContext;
-
-    public MainViewModel(INavigator navigator, AppDbContext dbContext)
-    {
-        _navigationService = navigator;
-        _dbContext = dbContext;
-        AddCommand = new RelayCommand(OnAdd, CanAdd);
-        DownloadCommand = new RelayCommand(OnDownload);
-    }
-
-    private void LoadJobSeekers()
-    {
-        if (SelectedRole == "Соискатели")
-        {
-            var jobSeekersList = _dbContext.JobSeekers.ToList();
-            JobSeekers = new ObservableCollection<JobSeeker>(jobSeekersList);
-        }
-        else
-        {
-            JobSeekers = new ObservableCollection<JobSeeker>();
-        }
-    }
-
-    private void OnDownload(object parameter)
-    {
-        if (parameter is string filePath && !string.IsNullOrWhiteSpace(filePath))
-        {
-            try
+            get => _currentUserControl;
+            set
             {
-                // Путь для сохранения файла
-                string destinationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Path.GetFileName(filePath));
-
-                // Если файл доступен, копируем его
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, destinationPath, overwrite: true);
-                    MessageBox.Show($"Файл успешно сохранён на рабочем столе: {destinationPath}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Файл не найден. Проверьте путь.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                _currentUserControl = value;
+                OnPropertyChanged();
             }
         }
-    }
 
-    private void OnAdd(object parameter)
-    {
-        if (SelectedRole == "Соискатели")
+        private readonly AppDbContext _dbContext;
+
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository)
         {
-            _navigationService.ShowDialog<JobSeekerAddWindow>();
+            _navigationService = navigator;
+            _dbContext = dbContext;
+            _serviceProvider = serviceProvider;
+            _jobSeekerRepository = jobSeekerRepository;
+
+            AddCommand = new RelayCommand(OnAdd, CanAdd);
+            DownloadCommand = new RelayCommand(OnDownload);
+
+            RefreshCommand = new RelayCommand(OnRefresh);
+
         }
-    }
 
-    private bool CanAdd(object parameter) => !string.IsNullOrEmpty(SelectedRole);
 
-    public event PropertyChangedEventHandler PropertyChanged;
+        private void LoadUserControl()
+        {
+            if (SelectedRole == "Соискатели")
+            {
+                var viewModel = _serviceProvider.GetRequiredService<JobSeekerDataGridViewModel>();
+                CurrentUserControl = new JobPlusWPF.View.JobSekeerDataGrid(viewModel);
+            }
+            else
+            {
+                // Очистка или замена на другой UserControl
+                CurrentUserControl = null;
+            }
+        }
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private void OnDownload(object parameter)
+        {
+            if (parameter is string filePath && !string.IsNullOrWhiteSpace(filePath))
+            {
+                try
+                {
+                    string destinationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Path.GetFileName(filePath));
+                    if (File.Exists(filePath))
+                    {
+                        File.Copy(filePath, destinationPath, overwrite: true);
+                        MessageBox.Show($"Файл успешно сохранён на рабочем столе: {destinationPath}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Файл не найден. Проверьте путь.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void OnAdd(object parameter)
+        {
+            if (SelectedRole == "Соискатели")
+            {
+                _navigationService.ShowDialog<JobSeekerAddWindow>();
+                OnRefresh(null);
+            }
+
+        }
+
+        private async void OnRefresh(object parameter)
+        {
+            var jobSeekers = await _jobSeekerRepository.GetAllAsync();
+
+            JobSeekers.Clear();
+
+            foreach (var jobSeeker in jobSeekers)
+            {
+                JobSeekers.Add(jobSeeker);
+            }
+            LoadUserControl();
+        }
+
+
+        private bool CanAdd(object parameter) => !string.IsNullOrEmpty(SelectedRole);
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

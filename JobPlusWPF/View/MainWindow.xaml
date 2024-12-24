@@ -67,40 +67,18 @@
                             Command="{Binding AddCommand}" />
                         <Button Content="Изменить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
                         <Button Content="Удалить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
+                        <Button Content="Обновить" 
+                            Width="100" 
+                            Margin="5" 
+                            Style="{StaticResource MaterialDesignFlatButton}" 
+                            Command="{Binding RefreshCommand}" 
+                            Visibility="Collapsed"/>
                     </StackPanel>
 
                 </Grid>
             </Border>
 
-            <!-- DataGrid для отображения данных -->
-            <DataGrid x:Name="jobSeekersDataGrid" 
-          ItemsSource="{Binding JobSeekers}" 
-          AutoGenerateColumns="True" 
-          Margin="10" 
-          AutoGeneratingColumn="jobSeekersDataGrid_AutoGeneratingColumn">
-                <DataGrid.Columns>
-                    <!-- Столбец с изображением -->
-                    <DataGridTemplateColumn Header="Фото">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding Photo}" 
-                           Width="100" Height="100" Stretch="UniformToFill" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- Столбец с кнопкой для скачивания -->
-                    <DataGridTemplateColumn Header="Скачать документ">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="Скачать"
-                            Command="{Binding DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                            CommandParameter="{Binding EducationDocumentScan}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+            <ContentControl Content="{Binding CurrentUserControl}" Margin="10" />
 
         </DockPanel>
     </DockPanel>

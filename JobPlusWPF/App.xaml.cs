@@ -49,6 +49,7 @@ namespace JobPlusWPF
             services.AddScoped<EnterViewModel>();
             services.AddScoped<MainViewModel>();
             services.AddScoped<JobSeekerAddViewModel>();
+            services.AddTransient<JobSeekerDataGridViewModel>();
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
