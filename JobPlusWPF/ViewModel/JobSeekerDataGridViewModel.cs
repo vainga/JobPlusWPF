@@ -11,6 +11,10 @@ using System.Windows.Input;
 public class JobSeekerDataGridViewModel : INotifyPropertyChanged
 {
     private readonly IRepository<JobSeeker> _jobSeekerRepository;
+    private readonly IRepository<CityDirectory> _cityRepository;
+    private readonly IRepository<StreetDirectory> _streetRepository;
+    private readonly IRepository<EducationLevel> _educationLevelRepository;
+
     private readonly ICurrentUserService _currentUserService;
 
     private ObservableCollection<JobSeeker> _jobSeekers;
@@ -26,7 +30,7 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
 
     public ICommand DownloadCommand { get; }
 
-    public JobSeekerDataGridViewModel(IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService)
+    public JobSeekerDataGridViewModel(IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IRepository<CityDirectory> cityRepository, IRepository<StreetDirectory> streetRepository, IRepository<EducationLevel> educationLevelRepository)
     {
         _jobSeekerRepository = jobSeekerRepository;
         _currentUserService = currentUserService;
@@ -34,11 +38,14 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
         LoadJobSeekers();
 
         DownloadCommand = new RelayCommand(OnDownload, CanDownload);
+        _cityRepository = cityRepository;
+        _streetRepository = streetRepository;
+        _educationLevelRepository = educationLevelRepository;
     }
 
     private async void LoadJobSeekers()
     {
-        int currentUserId = _currentUserService.GetCurrentUserId();  // Получаем ID текущего пользователя
+        int currentUserId = _currentUserService.GetCurrentUserId(); 
         var jobSeekers = await _jobSeekerRepository.GetAllAsync();
 
         var filteredJobSeekers = jobSeekers.Where(js => js.UserId == currentUserId);
@@ -46,6 +53,14 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
         JobSeekers.Clear();
         foreach (var jobSeeker in filteredJobSeekers)
         {
+            var city = await _cityRepository.FindByIdAsync(jobSeeker.CityId);
+            var street = await _streetRepository.FindByIdAsync(jobSeeker.StreetId);
+            var educationLevel = await _educationLevelRepository.FindByIdAsync(jobSeeker.EducationLevelId);
+
+            jobSeeker.City = city;
+            jobSeeker.Street = street;
+            jobSeeker.EducationLevel = educationLevel;
+
             JobSeekers.Add(jobSeeker);
         }
     }

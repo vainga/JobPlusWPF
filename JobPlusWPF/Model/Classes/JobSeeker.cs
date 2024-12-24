@@ -12,11 +12,11 @@ public class JobSeeker
     public string Phone { get; private set; }
     public string Photo { get; private set; }
     public int CityId { get; private set; } // Свойство для связи с City
-    public CityDirectory City { get; private set; }
+    public CityDirectory City { get; set; }
     public int StreetId { get; private set; } // Свойство для связи с Street
-    public StreetDirectory Street { get; private set; }
+    public StreetDirectory Street { get; set; }
     public int EducationLevelId { get; private set; }
-    public EducationLevel EducationLevel { get; private set; }
+    public EducationLevel EducationLevel { get; set; }
     public string Institution { get; private set; }
     public string EducationDocumentScan { get; private set; }
     public string Specialty { get; private set; }
@@ -25,10 +25,6 @@ public class JobSeeker
     public int UserId { get; private set; }
     public User User { get; private set; }
 
-    // Параметрless-конструктор для EF Core
-    private JobSeeker() { }
-
-    // Конструктор с параметрами
     public JobSeeker(string name, string surname, int age, string passportNumber, DateTime passportIssueDate, string passportIssuedBy,
                      string phone, string photo, int cityId, int streetId, int educationLevelId, string institution,
                      string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate, int userId)
