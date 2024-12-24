@@ -473,6 +473,8 @@ namespace JobPlusWPF.ViewModel
                 }
             }
 
+            RegistrationDate = DateTime.Now;
+
             // Создаем новый JobSeeker и сохраняем в базе данных
             JobSeeker newJobSeeker = new JobSeeker(
                 Name,
@@ -503,7 +505,7 @@ namespace JobPlusWPF.ViewModel
             Surname = string.Empty;
             Age = 0;
             PassportNumber = string.Empty;
-            PassportIssueDate = DateTime.MinValue;
+            PassportIssueDate = DateTime.Now;
             PassportIssuedBy = string.Empty;
             Phone = string.Empty;
             Photo = string.Empty;
@@ -515,7 +517,7 @@ namespace JobPlusWPF.ViewModel
             Specialty = string.Empty;
             WorkExperienceYears = 0;
             WorkExperienceMonths = 0;
-            RegistrationDate = DateTime.MinValue;
+            RegistrationDate = DateTime.Now;
             EducationDocumentFileName = string.Empty;
         }
 
