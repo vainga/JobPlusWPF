@@ -21,7 +21,7 @@ namespace JobPlusWPF.ViewModel
         private string _surname;
         private int _age;
         private string _passportNumber;
-        private DateTime _passportIssueDate;
+        private DateTime _passportIssueDate = DateTime.UtcNow;
         private string _passportIssuedBy;
         private string _phone;
         private string _photo;
@@ -440,43 +440,32 @@ namespace JobPlusWPF.ViewModel
 
         private async Task SaveJobSeeker()
         {
-            // Получаем userId с помощью ICurrentUserService
             int userId = _currentUserService.GetCurrentUserId();
 
-            // Проверяем и добавляем город
-            if (City == null || string.IsNullOrEmpty(City.Name))
+            if (City == null && !string.IsNullOrEmpty(CityName))
             {
-                if (!string.IsNullOrEmpty(CityName))
+                City = await _jobSeekerService.GetCityByNameAsync(CityName);
+                if (City == null)
                 {
-                    City = await _jobSeekerService.GetCityByNameAsync(CityName);
-
-                    if (City == null) // Город не найден, добавляем в БД
-                    {
-                        City = new CityDirectory(CityName); // Передаем CityName в конструктор
-                        await _jobSeekerService.AddCityAsync(City);
-                    }
+                    City = new CityDirectory(CityName);
+                    await _jobSeekerService.AddCityAsync(City);
                 }
             }
 
-            // Проверяем и добавляем улицу
-            if (Street == null || string.IsNullOrEmpty(Street.Name))
+            if (Street == null && !string.IsNullOrEmpty(StreetName))
             {
-                if (!string.IsNullOrEmpty(StreetName))
+                Street = await _jobSeekerService.GetStreetByNameAsync(StreetName);
+                if (Street == null) 
                 {
-                    Street = await _jobSeekerService.GetStreetByNameAsync(StreetName);
-
-                    if (Street == null) // Улица не найдена, добавляем в БД
-                    {
-                        Street = new StreetDirectory(StreetName); // Передаем StreetName в конструктор
-                        await _jobSeekerService.AddStreetAsync(Street);
-                    }
+                    Street = new StreetDirectory(StreetName);
+                    await _jobSeekerService.AddStreetAsync(Street);
                 }
             }
 
-            RegistrationDate = DateTime.Now;
+            PassportIssueDate = PassportIssueDate.ToUniversalTime();
+            RegistrationDate = DateTime.UtcNow;
 
-            // Создаем новый JobSeeker и сохраняем в базе данных
-            JobSeeker newJobSeeker = new JobSeeker(
+            var newJobSeeker = new JobSeeker(
                 Name,
                 Surname,
                 Age,
@@ -485,19 +474,20 @@ namespace JobPlusWPF.ViewModel
                 PassportIssuedBy,
                 Phone,
                 Photo,
-                City.Id,  // Используем Id города
-                Street.Id, // Используем Id улицы
+                City?.Id ?? 0,  
+                Street?.Id ?? 0,
                 EducationLevelId,
                 Institution,
                 EducationDocumentScan,
                 Specialty,
-                WorkExperienceYears * 12 + WorkExperienceMonths, // Переводим опыт работы в месяцы
+                WorkExperienceYears * 12 + WorkExperienceMonths, 
                 RegistrationDate,
-                userId  // Передаем userId, полученный из ICurrentUserService
+                userId
             );
 
             await _jobSeekerService.AddJobSeekerAsync(newJobSeeker);
         }
+
 
         private void ClearFields()
         {
@@ -505,7 +495,7 @@ namespace JobPlusWPF.ViewModel
             Surname = string.Empty;
             Age = 0;
             PassportNumber = string.Empty;
-            PassportIssueDate = DateTime.Now;
+            PassportIssueDate = DateTime.UtcNow;
             PassportIssuedBy = string.Empty;
             Phone = string.Empty;
             Photo = string.Empty;
@@ -517,7 +507,7 @@ namespace JobPlusWPF.ViewModel
             Specialty = string.Empty;
             WorkExperienceYears = 0;
             WorkExperienceMonths = 0;
-            RegistrationDate = DateTime.Now;
+            RegistrationDate = DateTime.UtcNow;
             EducationDocumentFileName = string.Empty;
         }
 

@@ -73,7 +73,35 @@
             </Border>
 
             <!-- DataGrid для отображения данных -->
-            <DataGrid Name="DataGrid" DockPanel.Dock="Bottom" Margin="10" AutoGenerateColumns="True" Background="#e9ecef"/>
+            <DataGrid x:Name="jobSeekersDataGrid" 
+          ItemsSource="{Binding JobSeekers}" 
+          AutoGenerateColumns="True" 
+          Margin="10" 
+          AutoGeneratingColumn="jobSeekersDataGrid_AutoGeneratingColumn">
+                <DataGrid.Columns>
+                    <!-- Столбец с изображением -->
+                    <DataGridTemplateColumn Header="Фото">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Photo}" 
+                           Width="100" Height="100" Stretch="UniformToFill" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Столбец с кнопкой для скачивания -->
+                    <DataGridTemplateColumn Header="Скачать документ">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Скачать"
+                            Command="{Binding DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                            CommandParameter="{Binding EducationDocumentScan}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
         </DockPanel>
     </DockPanel>
 </Window>
