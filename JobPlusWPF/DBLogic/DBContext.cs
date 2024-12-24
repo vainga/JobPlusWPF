@@ -53,15 +53,32 @@ namespace JobPlusWPF.DBLogic
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .Property(u => u.Id)
-                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<JobSeeker>()
+                .HasOne(j => j.City)
+                .WithMany(c => c.JobSeekers)
+                .HasForeignKey(j => j.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<JobSeeker>()
+                .HasOne(j => j.Street)
+                .WithMany(s => s.JobSeekers)
+                .HasForeignKey(j => j.StreetId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<JobSeeker>()
+                .HasOne(j => j.EducationLevel)
+                .WithMany(e => e.JobSeekers)
+                .HasForeignKey(j => j.EducationLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<JobSeeker>()
                 .HasOne(j => j.User)
                 .WithMany(u => u.JobSeekers)
-                .HasForeignKey(j => j.UserId);
+                .HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
+
 
         public void SeedEducationLevels()
         {

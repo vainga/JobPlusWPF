@@ -103,6 +103,7 @@
                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                       SelectedValuePath="Id"
                       DisplayMemberPath="Level"
+                      SelectedItem="{Binding SelectedEducationLevel}"
                       SelectedValue="{Binding EducationLevelId}"
                       ItemsSource="{Binding EducationLevels}">
                     <materialDesign:HintAssist.Hint>Уровень образования</materialDesign:HintAssist.Hint>

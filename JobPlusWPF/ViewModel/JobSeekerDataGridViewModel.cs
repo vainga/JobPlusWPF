@@ -1,5 +1,6 @@
 ﻿using JobPlusWPF.DBLogic;
 using JobPlusWPF.Model.Classes;
+using JobPlusWPF.Service;
 using JobPlusWPF.ViewModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 public class JobSeekerDataGridViewModel : INotifyPropertyChanged
 {
     private readonly IRepository<JobSeeker> _jobSeekerRepository;
+    private readonly ICurrentUserService _currentUserService;
 
     private ObservableCollection<JobSeeker> _jobSeekers;
     public ObservableCollection<JobSeeker> JobSeekers
@@ -24,9 +26,10 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
 
     public ICommand DownloadCommand { get; }
 
-    public JobSeekerDataGridViewModel(IRepository<JobSeeker> jobSeekerRepository)
+    public JobSeekerDataGridViewModel(IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService)
     {
         _jobSeekerRepository = jobSeekerRepository;
+        _currentUserService = currentUserService;
         JobSeekers = new ObservableCollection<JobSeeker>();
         LoadJobSeekers();
 
@@ -35,12 +38,33 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
 
     private async void LoadJobSeekers()
     {
+        int currentUserId = _currentUserService.GetCurrentUserId();  // Получаем ID текущего пользователя
         var jobSeekers = await _jobSeekerRepository.GetAllAsync();
-        foreach (var jobSeeker in jobSeekers)
+
+        var filteredJobSeekers = jobSeekers.Where(js => js.UserId == currentUserId);
+
+        JobSeekers.Clear();
+        foreach (var jobSeeker in filteredJobSeekers)
         {
             JobSeekers.Add(jobSeeker);
         }
     }
+
+
+    private JobSeeker _selectedJobSeeker;
+    public JobSeeker SelectedJobSeeker
+    {
+        get => _selectedJobSeeker;
+        set
+        {
+            if (_selectedJobSeeker != value)
+            {
+                _selectedJobSeeker = value;
+                OnPropertyChanged(nameof(SelectedJobSeeker));
+            }
+        }
+    }
+
 
     private void OnDownload(object parameter)
     {

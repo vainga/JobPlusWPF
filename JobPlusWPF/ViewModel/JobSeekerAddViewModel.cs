@@ -40,6 +40,7 @@ namespace JobPlusWPF.ViewModel
         private DateTime _registrationDate;
         private int _workExperienceYears;
         private int _workExperienceMonths;
+        private EducationLevel _selectedEducationLevel;
         private IEnumerable<EducationLevel> _educationLevels;
 
         private string _educationDocumentFileName;
@@ -304,6 +305,19 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
+        public EducationLevel SelectedEducationLevel
+        {
+            get => _selectedEducationLevel;
+            set
+            {
+                if (_selectedEducationLevel != value)
+                {
+                    _selectedEducationLevel = value;
+                    OnPropertyChanged(nameof(SelectedEducationLevel));
+                }
+            }
+        }
+
         public DateTime RegistrationDate
         {
             get => _registrationDate;
@@ -478,13 +492,13 @@ namespace JobPlusWPF.ViewModel
                 PassportIssuedBy,
                 Phone,
                 Photo,
-                City?.Id ?? 0,  
-                Street?.Id ?? 0,
+                City.Id,
+                Street.Id,
                 EducationLevelId,
                 Institution,
                 EducationDocumentScan,
                 Specialty,
-                WorkExperienceYears * 12 + WorkExperienceMonths, 
+                WorkExperienceYears * 12 + WorkExperienceMonths,
                 RegistrationDate,
                 userId
             );
@@ -503,9 +517,12 @@ namespace JobPlusWPF.ViewModel
             PassportIssuedBy = string.Empty;
             Phone = string.Empty;
             Photo = string.Empty;
+            City = null;
             CityName = string.Empty;
+            Street = null;
             StreetName = string.Empty;
             EducationLevelId = 0;
+            SelectedEducationLevel = null;
             Institution = string.Empty;
             EducationDocumentScan = string.Empty;
             Specialty = string.Empty;
@@ -531,6 +548,34 @@ namespace JobPlusWPF.ViewModel
             LoadEducationDocumentCommand = new RelayCommand(LoadEducationDocument);
 
             LoadEducationLevels();
+        }
+
+        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
+        {
+            if (jobSeeker != null)
+            {
+                Name = jobSeeker.Name;
+                Surname = jobSeeker.Surname;
+                Age = jobSeeker.Age;
+                PassportNumber = jobSeeker.PassportNumber;
+                PassportIssueDate = jobSeeker.PassportIssueDate;
+                PassportIssuedBy = jobSeeker.PassportIssuedBy;
+                Phone = jobSeeker.Phone;
+                Photo = jobSeeker.Photo;
+                CityName = City.Name;
+                StreetName = Street.Name;
+                EducationLevelId = jobSeeker.EducationLevelId;
+                SelectedEducationLevel = jobSeeker.EducationLevel;
+                Institution = jobSeeker.Institution;
+                EducationDocumentScan = jobSeeker.EducationDocumentScan;
+                Specialty = jobSeeker.Specialty;
+
+                int totalMonths = jobSeeker.WorkExperience;
+                WorkExperienceYears = totalMonths / 12;
+                WorkExperienceMonths = totalMonths % 12;
+
+                RegistrationDate = jobSeeker.RegistrationDate;
+            }
         }
 
 

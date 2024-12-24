@@ -65,8 +65,11 @@
                             Margin="5"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding AddCommand}" />
-                        <Button Content="Изменить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
-                        <Button Content="Удалить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" />
+                        <Button Content="Изменить" Width="100" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding EditCommand}"/>
+                        <Button Content="Удалить" 
+                            Style="{StaticResource MaterialDesignFlatButton}" 
+                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding SelectedItem, ElementName=JobSeekerDataGrid}" />
                         <Button Content="Обновить" 
                             Width="100" 
                             Margin="5" 

@@ -12,6 +12,7 @@ using System.IO;
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using JobPlusWPF.Service;
 
 namespace JobPlusWPF.ViewModel
 {
@@ -19,6 +20,8 @@ namespace JobPlusWPF.ViewModel
     {
         private readonly INavigator _navigationService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IJobSeekerService _jobSeekerService;
+        private readonly ICurrentUserService _currentUserService;
 
         private readonly IRepository<JobSeeker> _jobSeekerRepository;
 
@@ -29,15 +32,16 @@ namespace JobPlusWPF.ViewModel
         public ICommand DownloadCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand AddCommand { get; }
+        public ICommand DeleteCommand { get; }
 
 
         public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
-    {
-        "Работодатели",
-        "Вакансии",
-        "Соискатели",
-        "Совпадения"
-    };
+        {
+            "Работодатели",
+            "Вакансии",
+            "Соискатели",
+            "Совпадения"
+        };
 
         public string SelectedRole
         {
@@ -76,18 +80,97 @@ namespace JobPlusWPF.ViewModel
 
         private readonly AppDbContext _dbContext;
 
-        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository)
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService)
         {
             _navigationService = navigator;
             _dbContext = dbContext;
             _serviceProvider = serviceProvider;
             _jobSeekerRepository = jobSeekerRepository;
 
+            _currentUserService = currentUserService;
+            _jobSeekerService = jobSeekerService;
+
             AddCommand = new RelayCommand(OnAdd, CanAdd);
             DownloadCommand = new RelayCommand(OnDownload);
-
+            DeleteCommand = new RelayCommand(OnDelete, CanDelete);
             RefreshCommand = new RelayCommand(OnRefresh);
+            EditCommand = new RelayCommand(OnEdit, CanEdit);
 
+        }
+
+
+        ///Очень плохо, надо изменить потом 
+        private async void OnDelete(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                var selectedJobSeeker = jobSeekerViewModel.SelectedJobSeeker;
+
+                if (selectedJobSeeker != null)
+                {
+                    var result = MessageBox.Show($"Вы уверены, что хотите удалить {selectedJobSeeker.Name} {selectedJobSeeker.Surname}?",
+                                                 "Подтверждение удаления",
+                                                 MessageBoxButton.YesNo,
+                                                 MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await _jobSeekerRepository.DeleteAsync(selectedJobSeeker.Id);
+                        JobSeekers.Remove(selectedJobSeeker);
+                        jobSeekerViewModel.JobSeekers.Remove(selectedJobSeeker);
+                        jobSeekerViewModel.SelectedJobSeeker = null;
+                    }
+                }
+            }
+        }
+
+        private bool CanDelete(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                return jobSeekerViewModel.SelectedJobSeeker != null;
+            }
+
+            return false;
+        }
+
+        public ICommand EditCommand { get; }
+        private async void OnEdit(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                var selectedJobSeeker = jobSeekerViewModel.SelectedJobSeeker;
+
+                if (selectedJobSeeker != null)
+                {
+                    var viewModel = new JobSeekerAddViewModel(
+                        _navigationService,
+                        _jobSeekerService,
+                        _currentUserService,
+                        selectedJobSeeker
+                    );
+
+                    var editWindow = new JobSeekerAddWindow(viewModel); // Передаем выбранного соискателя
+                    bool? result = editWindow.ShowDialog();
+
+                    if (result == true) // Если окно редактирования было закрыто с подтверждением
+                    {
+                        // Применяем изменения в JobSeeker
+                        await _jobSeekerRepository.UpdateAsync(selectedJobSeeker);
+                        jobSeekerViewModel.SelectedJobSeeker = selectedJobSeeker;
+                    }
+                }
+            }
+        }
+
+        private bool CanEdit(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                return jobSeekerViewModel.SelectedJobSeeker != null; // Проверяем, что выбран соискатель
+            }
+
+            return false;
         }
 
 
@@ -138,6 +221,8 @@ namespace JobPlusWPF.ViewModel
             }
 
         }
+
+
 
         private async void OnRefresh(object parameter)
         {

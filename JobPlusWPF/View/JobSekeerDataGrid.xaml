@@ -9,6 +9,7 @@
     <Grid>
         <DataGrid x:Name="jobSeekersDataGrid" 
                   ItemsSource="{Binding JobSeekers}" 
+                  SelectedItem="{Binding SelectedJobSeeker}"
                   AutoGenerateColumns="False" 
                   Margin="10"
                   CanUserAddRows="False"
@@ -62,7 +63,7 @@
                 <DataGridTextColumn Header="Кем выдан" Binding="{Binding PassportIssuedBy}" Width="Auto" />
 
                 <!-- Уровень образования -->
-                <DataGridTextColumn Header="Образование" Binding="{Binding EducationLevel.Name}" Width="Auto" />
+                <DataGridTextColumn Header="Образование" Binding="{Binding EducationLevel.Level}" Width="Auto" />
 
                 <!-- Учебное заведение -->
                 <DataGridTextColumn Header="Учебное заведение" Binding="{Binding Institution}" Width="Auto" />
