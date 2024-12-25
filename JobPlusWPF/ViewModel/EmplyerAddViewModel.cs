@@ -128,6 +128,9 @@ namespace JobPlusWPF.ViewModel
                 userId
                 );
 
+            await _emloyerService.AddEmplyerAsync(newEmployer);
+
+            _navigator.CloseWindow<AddEmployer>();
 
         }
 

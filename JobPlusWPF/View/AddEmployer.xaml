@@ -24,14 +24,14 @@
                 <!-- Улица -->
                 <TextBox Name="EmployerStreetTextBox" Width="400" Margin="0,10,0,0" 
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                         Text="{Binding Street, UpdateSourceTrigger=PropertyChanged}">
+                         Text="{Binding StreetName, UpdateSourceTrigger=PropertyChanged}">
                     <materialDesign:HintAssist.Hint>Улица</materialDesign:HintAssist.Hint>
                 </TextBox>
 
                 <!-- Город -->
                 <TextBox Name="EmployerCityTextBox" Width="400" Margin="0,10,0,0" 
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                         Text="{Binding City, UpdateSourceTrigger=PropertyChanged}">
+                         Text="{Binding CityName, UpdateSourceTrigger=PropertyChanged}">
                     <materialDesign:HintAssist.Hint>Город</materialDesign:HintAssist.Hint>
                 </TextBox>
 
