@@ -10,16 +10,20 @@ namespace JobPlusWPF.Model.Classes
     {
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public string Address { get; private set; }
+        public int CityId { get; private set; } 
+        public CityDirectory City { get; set; }
+        public int StreetId { get; private set; }
+        public StreetDirectory Street { get; set; }
         public ICollection<Vacancy> Vacancies { get; private set; } = new List<Vacancy>();
 
         public int UserId { get; private set; }
         public User User { get; private set; }
 
-        public Employer(string name, string address, int userId)
+        public Employer(string name, int cityId, int streetId, int userId)
         {
             Name = name;
-            Address = address;
+            CityId = cityId;
+            StreetId = streetId;
             UserId = userId;
         }
     }

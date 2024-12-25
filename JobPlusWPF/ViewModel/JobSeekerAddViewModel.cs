@@ -562,8 +562,8 @@ namespace JobPlusWPF.ViewModel
                 PassportIssuedBy = jobSeeker.PassportIssuedBy;
                 Phone = jobSeeker.Phone;
                 Photo = jobSeeker.Photo;
-                CityName = City.Name;
-                StreetName = Street.Name;
+                CityName = jobSeeker.City.Name;
+                StreetName = jobSeeker.Street.Name;
                 EducationLevelId = jobSeeker.EducationLevelId;
                 SelectedEducationLevel = jobSeeker.EducationLevel;
                 Institution = jobSeeker.Institution;

@@ -76,6 +76,25 @@ namespace JobPlusWPF.DBLogic
                 .WithMany(u => u.JobSeekers)
                 .HasForeignKey(j => j.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Employer>()
+                .HasOne(e => e.City)
+                .WithMany()
+                .HasForeignKey(e => e.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Employer>()
+                .HasOne(e => e.Street)
+                .WithMany()
+                .HasForeignKey(e => e.StreetId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<JobSeeker>()
+                .HasOne(j => j.User)
+                .WithMany(u => u.JobSeekers)
+                .HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
 
 

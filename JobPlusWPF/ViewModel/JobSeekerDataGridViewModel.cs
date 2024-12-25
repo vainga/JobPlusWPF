@@ -53,15 +53,22 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
         JobSeekers.Clear();
         foreach (var jobSeeker in filteredJobSeekers)
         {
-            var city = await _cityRepository.FindByIdAsync(jobSeeker.CityId);
-            var street = await _streetRepository.FindByIdAsync(jobSeeker.StreetId);
-            var educationLevel = await _educationLevelRepository.FindByIdAsync(jobSeeker.EducationLevelId);
+            try
+            {
+                var city =  _cityRepository.FindByIdAsync(jobSeeker.CityId);
+                var street =  _streetRepository.FindByIdAsync(jobSeeker.StreetId);
+                var educationLevel =  _educationLevelRepository.FindByIdAsync(jobSeeker.EducationLevelId);
 
-            jobSeeker.City = city;
-            jobSeeker.Street = street;
-            jobSeeker.EducationLevel = educationLevel;
+                jobSeeker.City = await city;
+                jobSeeker.Street = await street;
+                jobSeeker.EducationLevel = await educationLevel;
 
-            JobSeekers.Add(jobSeeker);
+                JobSeekers.Add(jobSeeker);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при загрузке пользователя {jobSeeker.Id}: {ex.Message}");
+            }
         }
     }
 

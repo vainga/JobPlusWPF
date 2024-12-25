@@ -23,6 +23,10 @@ namespace JobPlusWPF.ViewModel
         private readonly IJobSeekerService _jobSeekerService;
         private readonly ICurrentUserService _currentUserService;
 
+        private readonly IRepository<CityDirectory> _cityRepository;
+        private readonly IRepository<StreetDirectory> _streetRepository;
+        private readonly IRepository<EducationLevel> _educationLevelRepository;
+
         private readonly IRepository<JobSeeker> _jobSeekerRepository;
 
         private string _selectedRole;
@@ -141,6 +145,10 @@ namespace JobPlusWPF.ViewModel
             {
                 var selectedJobSeeker = jobSeekerViewModel.SelectedJobSeeker;
 
+                //selectedJobSeeker.City = await _cityRepository.FindByIdAsync(selectedJobSeeker.CityId);
+                //selectedJobSeeker.Street = await _streetRepository.FindByIdAsync(selectedJobSeeker.StreetId);
+                //selectedJobSeeker.EducationLevel = await _educationLevelRepository.FindByIdAsync(selectedJobSeeker.EducationLevelId);
+
                 if (selectedJobSeeker != null)
                 {
                     var viewModel = new JobSeekerAddViewModel(
@@ -150,12 +158,11 @@ namespace JobPlusWPF.ViewModel
                         selectedJobSeeker
                     );
 
-                    var editWindow = new JobSeekerAddWindow(viewModel); // Передаем выбранного соискателя
+                    var editWindow = new JobSeekerAddWindow(viewModel);
                     bool? result = editWindow.ShowDialog();
 
-                    if (result == true) // Если окно редактирования было закрыто с подтверждением
+                    if (result == true)
                     {
-                        // Применяем изменения в JobSeeker
                         await _jobSeekerRepository.UpdateAsync(selectedJobSeeker);
                         jobSeekerViewModel.SelectedJobSeeker = selectedJobSeeker;
                     }
@@ -167,7 +174,7 @@ namespace JobPlusWPF.ViewModel
         {
             if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
             {
-                return jobSeekerViewModel.SelectedJobSeeker != null; // Проверяем, что выбран соискатель
+                return jobSeekerViewModel.SelectedJobSeeker != null;
             }
 
             return false;
@@ -217,6 +224,11 @@ namespace JobPlusWPF.ViewModel
             if (SelectedRole == "Соискатели")
             {
                 _navigationService.ShowDialog<JobSeekerAddWindow>();
+                OnRefresh(null);
+            }
+            if (SelectedRole == "Работодатели")
+            {
+                _navigationService.ShowDialog<AddEmployer>();
                 OnRefresh(null);
             }
 

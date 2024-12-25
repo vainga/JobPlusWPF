@@ -3,6 +3,7 @@ using System;
 using JobPlusWPF.DBLogic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobPlusWPF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241225034019_EmployerUpdate")]
+    partial class EmployerUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,13 +288,13 @@ namespace JobPlusWPF.Migrations
                     b.HasOne("JobPlusWPF.Model.Classes.CityDirectory", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JobPlusWPF.Model.Classes.StreetDirectory", "Street")
                         .WithMany()
                         .HasForeignKey("StreetId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JobPlusWPF.Model.Classes.User", "User")
