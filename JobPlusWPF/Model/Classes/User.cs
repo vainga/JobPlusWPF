@@ -20,6 +20,8 @@ namespace JobPlusWPF.Model.Classes
         public Role Role { get; private set; }
 
         public virtual ICollection<JobSeeker> JobSeekers { get; set; }
+        public virtual ICollection<Employer> Employers { get; set; }
+
 
         public User(string login, string password, Role role = Role.User)
         {

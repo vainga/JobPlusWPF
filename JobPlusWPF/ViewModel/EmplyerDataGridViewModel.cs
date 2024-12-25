@@ -55,24 +55,25 @@ namespace JobPlusWPF.ViewModel
             int currentUserId = _currentUserService.GetCurrentUserId();
             var employers = await _employerRepository.GetAllAsync();
 
-            var filteredJobSeekers = employers.Where(js => js.UserId == currentUserId);
+            var filteredEmployers = employers.Where(js => js.UserId == currentUserId);
 
+            //Employers = new ObservableCollection<Employer>();
             Employers.Clear();
-            foreach (var jobSeeker in filteredJobSeekers)
+            foreach (var employer in filteredEmployers)
             {
                 try
                 {
-                    var city = _cityRepository.FindByIdAsync(jobSeeker.CityId);
-                    var street = _streetRepository.FindByIdAsync(jobSeeker.StreetId);
+                    var city = _cityRepository.FindByIdAsync(employer.CityId);
+                    var street = _streetRepository.FindByIdAsync(employer.StreetId);
 
-                    jobSeeker.City = await city;
-                    jobSeeker.Street = await street;
+                    employer.City = await city;
+                    employer.Street = await street;
 
-                    Employers.Add(jobSeeker);
+                    Employers.Add(employer);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка при загрузке пользователя {jobSeeker.Id}: {ex.Message}");
+                    Console.WriteLine($"Ошибка при загрузке пользователя {employer.Id}: {ex.Message}");
                 }
             }
         }

@@ -188,7 +188,7 @@ namespace JobPlusWPF.ViewModel
                 var viewModel = _serviceProvider.GetRequiredService<JobSeekerDataGridViewModel>();
                 CurrentUserControl = new JobPlusWPF.View.JobSekeerDataGrid(viewModel);
             }
-            else if(SelectedRole == "Соискатели")
+            else if(SelectedRole == "Работодатели")
             {
                 var viewModel = _serviceProvider.GetRequiredService<EmplyerDataGridViewModel>();
                 CurrentUserControl = new JobPlusWPF.View.EmplyerDataGrid(viewModel);
