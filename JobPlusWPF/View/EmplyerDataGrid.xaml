@@ -9,7 +9,7 @@
     <Grid>
         <DataGrid x:Name="jobSeekersDataGrid" 
           ItemsSource="{Binding Employers}" 
-          SelectedItem="{Binding SelectedEmplyer}"
+          SelectedItem="{Binding SelectedEmployer}"
           AutoGenerateColumns="False" 
           Margin="10"
           CanUserAddRows="False"

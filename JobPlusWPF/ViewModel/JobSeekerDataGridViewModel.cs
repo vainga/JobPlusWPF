@@ -35,12 +35,12 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
         _jobSeekerRepository = jobSeekerRepository;
         _currentUserService = currentUserService;
         JobSeekers = new ObservableCollection<JobSeeker>();
-        LoadJobSeekers();
-
-        DownloadCommand = new RelayCommand(OnDownload, CanDownload);
         _cityRepository = cityRepository;
         _streetRepository = streetRepository;
         _educationLevelRepository = educationLevelRepository;
+        LoadJobSeekers();
+
+        DownloadCommand = new RelayCommand(OnDownload, CanDownload);
     }
 
     private async void LoadJobSeekers()

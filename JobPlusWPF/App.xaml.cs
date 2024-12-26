@@ -35,6 +35,7 @@ namespace JobPlusWPF
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<JobSeeker>, Repository<JobSeeker>>();
             services.AddScoped<IRepository<Employer>, Repository<Employer>>();
+            services.AddScoped<IRepository<Vacancy>, Repository<Vacancy>>();
             services.AddScoped<IRepository<CityDirectory>, Repository<CityDirectory>>();
             services.AddScoped<IRepository<StreetDirectory>, Repository<StreetDirectory>>();
             services.AddScoped<IRepository<EducationLevel>, Repository<EducationLevel>>();
@@ -43,6 +44,7 @@ namespace JobPlusWPF
             services.AddScoped<IJobSeekerService, JobSeekerService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IEmplyerService, EmplyerService>();
+            services.AddScoped<IVacancyService, VacancyService>();
 
 
             // Регистрация навигатора
@@ -55,12 +57,15 @@ namespace JobPlusWPF
             services.AddTransient<JobSeekerDataGridViewModel>();
             services.AddScoped<EmplyerAddViewModel>();
             services.AddTransient<EmplyerDataGridViewModel>();
+            services.AddScoped<AddVacancyViewModel>();
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
             services.AddTransient<MainWindow>();
             services.AddTransient<JobSeekerAddWindow>();
             services.AddTransient<AddEmployer>();
+            services.AddTransient<AddVacancy>();
+
             // Строим контейнер зависимостей
             _serviceProvider = services.BuildServiceProvider();
 

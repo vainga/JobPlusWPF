@@ -101,6 +101,7 @@ namespace JobPlusWPF.DBLogic
                 .HasForeignKey(j => j.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
         }
 
 

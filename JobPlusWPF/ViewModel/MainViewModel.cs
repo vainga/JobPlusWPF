@@ -21,6 +21,7 @@ namespace JobPlusWPF.ViewModel
         private readonly INavigator _navigationService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IJobSeekerService _jobSeekerService;
+        private readonly IEmplyerService _emplyerService;
         private readonly ICurrentUserService _currentUserService;
 
         private readonly IRepository<CityDirectory> _cityRepository;
@@ -84,7 +85,7 @@ namespace JobPlusWPF.ViewModel
 
         private readonly AppDbContext _dbContext;
 
-        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService)
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService)
         {
             _navigationService = navigator;
             _dbContext = dbContext;
@@ -93,6 +94,9 @@ namespace JobPlusWPF.ViewModel
 
             _currentUserService = currentUserService;
             _jobSeekerService = jobSeekerService;
+            _emplyerService = emplyerService;
+
+
 
             AddCommand = new RelayCommand(OnAdd, CanAdd);
             DownloadCommand = new RelayCommand(OnDownload);
@@ -234,6 +238,11 @@ namespace JobPlusWPF.ViewModel
             if (SelectedRole == "Работодатели")
             {
                 _navigationService.ShowDialog<AddEmployer>();
+                OnRefresh(null);
+            }
+            if(SelectedRole == "Вакансии")
+            {
+                _navigationService.ShowDialog<AddVacancy>();
                 OnRefresh(null);
             }
 

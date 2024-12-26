@@ -20,6 +20,8 @@ namespace JobPlusWPF.ViewModel
         private readonly ICurrentUserService _currentUserService;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -32,51 +34,51 @@ namespace JobPlusWPF.ViewModel
             set
             {
                 _employer = value;
-                OnPropertyChanged(nameof(Employers ));
+                OnPropertyChanged(nameof(Employers));
             }
         }
 
-        private JobSeeker _selectedEmplyers;
-        public JobSeeker SelectedEmplyers
+        private Employer _selectedEmployer;
+        public Employer SelectedEmployer
         {
-            get => _selectedEmplyers;
+            get => _selectedEmployer;
             set
             {
-                if (_selectedEmplyers != value)
+                if (_selectedEmployer != value)
                 {
-                    _selectedEmplyers = value;
-                    OnPropertyChanged(nameof(SelectedEmplyers));
+                    _selectedEmployer = value;
+                    OnPropertyChanged(nameof(SelectedEmployer));
                 }
             }
         }
 
-        private async void LoadEmployers()
+        private async Task LoadEmployers()
         {
             int currentUserId = _currentUserService.GetCurrentUserId();
             var employers = await _employerRepository.GetAllAsync();
 
-            var filteredEmployers = employers.Where(js => js.UserId == currentUserId);
+            var filteredEmployers = employers.Where(e => e.UserId == currentUserId);
 
-            //Employers = new ObservableCollection<Employer>();
             Employers.Clear();
             foreach (var employer in filteredEmployers)
             {
                 try
                 {
-                    var city = _cityRepository.FindByIdAsync(employer.CityId);
-                    var street = _streetRepository.FindByIdAsync(employer.StreetId);
+                    var city = await _cityRepository.FindByIdAsync(employer.CityId);
+                    var street = await _streetRepository.FindByIdAsync(employer.StreetId);
 
-                    employer.City = await city;
-                    employer.Street = await street;
+                    employer.City = city;
+                    employer.Street = street;
 
                     Employers.Add(employer);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка при загрузке пользователя {employer.Id}: {ex.Message}");
+                    Console.WriteLine($"Ошибка при загрузке работодателя {employer.Id}: {ex.Message}");
                 }
             }
         }
+
 
         public EmplyerDataGridViewModel(IRepository<Employer> employerRepository, ICurrentUserService currentUserService, IRepository<CityDirectory> cityRepository, IRepository<StreetDirectory> streetRepository)
         {
@@ -85,6 +87,7 @@ namespace JobPlusWPF.ViewModel
             _cityRepository = cityRepository;
             _streetRepository = streetRepository;
 
+            Employers = new ObservableCollection<Employer>();
             LoadEmployers();
         }
 
