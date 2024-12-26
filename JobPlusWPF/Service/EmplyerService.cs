@@ -63,5 +63,10 @@ namespace JobPlusWPF.Service
 
             await _streetRepository.AddAsync(street);
         }
+
+        public async Task<IEnumerable<Employer>> GetAllEmployersAsync()
+        {
+            return await _emplyerRepository.GetAllAsync();
+        }
     }
 }

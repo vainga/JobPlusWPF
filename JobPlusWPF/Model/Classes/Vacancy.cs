@@ -10,11 +10,11 @@ namespace JobPlusWPF.Model.Classes
     {
         public int Id { get; private set; }
         public string Position { get; private set; }
-        public int Salary { get; private set; }
+        public decimal Salary { get; private set; }
         public int EmployerId { get; private set; }
         public Employer Employer { get; private set; }
 
-        public Vacancy(string position, int employerId, int salary)
+        public Vacancy(string position, int employerId, decimal salary)
         {
             Position = position;
             EmployerId = employerId;

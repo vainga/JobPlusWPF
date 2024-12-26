@@ -18,12 +18,13 @@ namespace JobPlusWPF.ViewModel
         private readonly INavigator _navigator;
         private readonly ICurrentUserService _currentUserService;
         private readonly IVacancyService _vacancyService;
+        private readonly IEmplyerService _employerService;
 
         public ICommand CancelCommand { get; }
         public ICommand SaveCommand { get; }
 
         private string _position;
-        private string _salary;
+        private decimal _salary;
         private Employer _selectedEmployer;
         private ObservableCollection<Employer> _employers;
 
@@ -40,7 +41,7 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
-        public string Salary
+        public decimal Salary
         {
             get => _salary;
             set
@@ -86,34 +87,42 @@ namespace JobPlusWPF.ViewModel
 
         private async void Save(object parameter)
         {
-            if (SelectedEmployer == null || string.IsNullOrWhiteSpace(Position) || string.IsNullOrWhiteSpace(Salary))
+            if (SelectedEmployer == null || string.IsNullOrWhiteSpace(Position) /*|| string.IsNullOrWhiteSpace(Salary)*/)
             {
                 // Валидация: убедитесь, что все обязательные поля заполнены
                 return;
             }
 
-            if (!int.TryParse(Salary, out var parsedSalary))
-            {
-                // Если зарплата введена некорректно, можно уведомить пользователя или просто выйти
-                return;
-            }
+            //if (!int.TryParse(Salary, out var parsedSalary))
+            //{
+            //    // Если зарплата введена некорректно, можно уведомить пользователя или просто выйти
+            //    return;
+            //}
 
-            var newVacancy = new Vacancy(Position, SelectedEmployer.Id, parsedSalary);
+            var newVacancy = new Vacancy(Position, SelectedEmployer.Id, Salary);
 
             await _vacancyService.AddVacancyAsync(newVacancy);
             _navigator.CloseWindow<AddVacancy>();
         }
 
+        private async Task LoadEmployersAsync()
+        {
+            var employers = await _employerService.GetAllEmployersAsync();
+            var filteredEmployers = employers.Where(e => e.UserId == _currentUserService.GetCurrentUserId());
+            Employers = new ObservableCollection<Employer>(filteredEmployers);
+        }
 
-        public AddVacancyViewModel(INavigator navigator, IVacancyService vacancyService ,ICurrentUserService currentUserService)
+        public AddVacancyViewModel(INavigator navigator, IVacancyService vacancyService ,ICurrentUserService currentUserService, IEmplyerService emplyerService)
         {
             _navigator = navigator;
             _currentUserService = currentUserService;
             _vacancyService = vacancyService;
+            _employerService = emplyerService;
 
             CancelCommand = new RelayCommand(Cancel);
             SaveCommand = new RelayCommand(Save);
 
+            LoadEmployersAsync();
         }
 
 
