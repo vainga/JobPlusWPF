@@ -14,17 +14,20 @@ namespace JobPlusWPF.Service
         private readonly IRepository<CityDirectory> _cityRepository;
         private readonly IRepository<StreetDirectory> _streetRepository;
         private readonly IRepository<EducationLevel> _educationLevelRepository;
+        private readonly IRepository<Vacancy> _vacancyRepository;
 
         public EmplyerService(
             IRepository<Employer> emplyerRepository,
             IRepository<CityDirectory> cityRepository,
             IRepository<StreetDirectory> streetRepository,
-            IRepository<EducationLevel> educationLevelRepository)
+            IRepository<EducationLevel> educationLevelRepository,
+            IRepository<Vacancy> vacancyRepository)
         {
             _emplyerRepository = emplyerRepository ?? throw new ArgumentNullException(nameof(emplyerRepository));
             _cityRepository = cityRepository ?? throw new ArgumentNullException(nameof(cityRepository));
             _streetRepository = streetRepository ?? throw new ArgumentNullException(nameof(streetRepository));
             _educationLevelRepository = educationLevelRepository ?? throw new ArgumentNullException(nameof(educationLevelRepository));
+            _vacancyRepository = vacancyRepository;
         }
 
         public async Task AddEmplyerAsync(Employer employer)
@@ -77,6 +80,17 @@ namespace JobPlusWPF.Service
         public async Task DeleteEmployerAsync(Employer employer)
         {
             if (employer == null) throw new ArgumentNullException(nameof(employer));
+
+            var vacancies = await _vacancyRepository.FindAsync(vacancy => vacancy.EmployerId == employer.Id);
+
+            foreach (var vacancy in vacancies)
+            {
+                await _vacancyRepository.DeleteAsync(vacancy.Id);
+            }
+
+            await _emplyerRepository.DeleteAsync(employer.Id);
         }
+
+
     }
 }

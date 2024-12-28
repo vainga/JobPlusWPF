@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using JobPlusWPF.Service;
+using System.Windows.Documents;
 
 namespace JobPlusWPF.ViewModel
 {
@@ -48,12 +49,6 @@ namespace JobPlusWPF.ViewModel
         public ICommand RefreshCommand { get; }
         public ICommand AddCommand { get; }
         public ICommand DeleteCommand { get; }
-
-        public ICommand EditEmployerCommand { get; }
-        public ICommand DeleteEmployerCommand { get; }
-
-        public ICommand EditVacancyCommand { get; }
-        public ICommand DeleteVacancyCommand { get; }
 
         public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
         {
@@ -120,12 +115,15 @@ namespace JobPlusWPF.ViewModel
 
         private readonly AppDbContext _dbContext;
 
-        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService)
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository)
         {
             _navigationService = navigator;
             _dbContext = dbContext;
             _serviceProvider = serviceProvider;
+
             _jobSeekerRepository = jobSeekerRepository;
+            _vacancyRepository = vacancyRepository;
+            _employerRepository = employerRepository;
 
             _currentUserService = currentUserService;
             _jobSeekerService = jobSeekerService;
@@ -135,19 +133,48 @@ namespace JobPlusWPF.ViewModel
 
             AddCommand = new RelayCommand(OnAdd, CanAdd);
             DownloadCommand = new RelayCommand(OnDownload);
-            DeleteCommand = new RelayCommand(OnDeleteJobSeeker, CanDeleteJobSeeker);
+            DeleteCommand = new RelayCommand(OnDelete, CanDelete);
             RefreshCommand = new RelayCommand(OnRefresh);
-
             EditCommand = new RelayCommand(OnEditJobSeeker, CanEditJobSeeker);
 
-            EditEmployerCommand = new RelayCommand(OnEditEmployer, CanEditEmployer);
-            DeleteEmployerCommand = new RelayCommand(OnDeleteEmployer, CanDeleteEmployer);
-
-            //EditVacancyCommand = new RelayCommand(OnEditVacancy, CanEditVacancy);
-            DeleteVacancyCommand = new RelayCommand(OnDeleteVacancy, CanDeleteVacancy);
 
             //LoadUserControl();
 
+        }
+
+        private async void OnDelete(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid jobSeekerGrid && jobSeekerGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                OnDeleteJobSeeker(parameter);
+            }
+            else if (CurrentUserControl is VacancyDataGrid vacancyGrid && vacancyGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                OnDeleteVacancy(parameter);
+            }
+            else if(CurrentUserControl is EmplyerDataGrid employerGrid && employerGrid.DataContext is EmplyerDataGridViewModel employerViewModel)
+            {
+                OnDeleteEmployer(parameter);
+            }
+
+        }
+
+        private bool CanDelete(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid jobSeekerGrid && jobSeekerGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                return CanDeleteJobSeeker(parameter);
+            }
+            else if(CurrentUserControl is VacancyDataGrid vacancyGrid && vacancyGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+               return CanDeleteVacancy(parameter);
+            }
+            else if(CurrentUserControl is EmplyerDataGrid employerGrid && employerGrid.DataContext is EmplyerDataGridViewModel employerViewModel)
+            {
+               return CanDeleteEmployer(parameter);
+            }
+
+            return false;
         }
 
         private async void OnDeleteJobSeeker(object parameter)
@@ -192,14 +219,15 @@ namespace JobPlusWPF.ViewModel
 
                 if (selectedEmployer != null)
                 {
-                    var result = MessageBox.Show($"Вы уверены, что хотите удалить {selectedEmployer.Name}?",
-                                                 "Подтверждение удаления",
-                                                 MessageBoxButton.YesNo,
-                                                 MessageBoxImage.Question);
+                    var result = MessageBox.Show($"Вы уверены, что хотите удалить {selectedEmployer.Name}? \nВсе связанные вакансии также будут удалены.",
+                                          "Подтверждение удаления",
+                                          MessageBoxButton.YesNo,
+                                          MessageBoxImage.Warning);
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        await _employerRepository.DeleteAsync(selectedEmployer.Id);
+                        //await _employerRepository.DeleteAsync(selectedEmployer.Id);
+                        _emplyerService.DeleteEmployerAsync(selectedEmployer);
                         Employers.Remove(selectedEmployer);
                         emplyerAddViewModel.Employers.Remove(selectedEmployer);
                         emplyerAddViewModel.SelectedEmployer = null;

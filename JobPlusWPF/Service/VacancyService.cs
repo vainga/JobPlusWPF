@@ -28,5 +28,10 @@ namespace JobPlusWPF.Service
         {
             return await _vacancyRepository.GetAllAsync();
         }
+
+        public async Task<IEnumerable<Vacancy>> GetVacanciesByEmployerIdAsync(int employerId)
+        {
+            return await _vacancyRepository.FindAsync(vacancy => vacancy.EmployerId == employerId);
+        }
     }
 }
