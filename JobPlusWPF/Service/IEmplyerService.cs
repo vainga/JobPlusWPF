@@ -16,5 +16,7 @@ namespace JobPlusWPF.Service
         Task<StreetDirectory> GetStreetByNameAsync(string streetName);
         Task AddStreetAsync(StreetDirectory street);
         Task<IEnumerable<Employer>> GetAllEmployersAsync();
+        Task<Employer> GetEmployerByIdAsync(int id);
+        Task DeleteEmployerAsync(Employer employer);
     }
 }

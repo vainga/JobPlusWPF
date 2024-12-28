@@ -24,5 +24,9 @@ namespace JobPlusWPF.Service
             await _vacancyRepository.AddAsync(vacancy);
         }
 
+        public async Task<IEnumerable<Vacancy>> GetAllVacanciesAsync()
+        {
+            return await _vacancyRepository.GetAllAsync();
+        }
     }
 }

@@ -68,5 +68,15 @@ namespace JobPlusWPF.Service
         {
             return await _emplyerRepository.GetAllAsync();
         }
+
+        public async Task<Employer> GetEmployerByIdAsync(int id)
+        {
+            return await _emplyerRepository.FindByIdAsync(id);
+        }
+
+        public async Task DeleteEmployerAsync(Employer employer)
+        {
+            if (employer == null) throw new ArgumentNullException(nameof(employer));
+        }
     }
 }

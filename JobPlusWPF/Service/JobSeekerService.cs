@@ -63,5 +63,40 @@ namespace JobPlusWPF.Service
 
             await _streetRepository.AddAsync(street);
         }
+
+        public async Task UpdateJobSeekerAsync(JobSeeker jobSeeker)
+        {
+            if (jobSeeker == null)
+                throw new ArgumentNullException(nameof(jobSeeker));
+
+            // Проверяем существование JobSeeker в базе данных
+            var existingJobSeeker = await _jobSeekerRepository.FindByIdAsync(jobSeeker.Id);
+            if (existingJobSeeker == null)
+                throw new InvalidOperationException($"JobSeeker with ID {jobSeeker.Id} does not exist.");
+
+            // Обновляем поля
+            existingJobSeeker.Update(
+                jobSeeker.Name,
+                jobSeeker.Surname,
+                jobSeeker.Age,
+                jobSeeker.PassportNumber,
+                jobSeeker.PassportIssueDate,
+                jobSeeker.PassportIssuedBy,
+                jobSeeker.Phone,
+                jobSeeker.Photo,
+                jobSeeker.CityId,
+                jobSeeker.StreetId,
+                jobSeeker.EducationLevelId,
+                jobSeeker.Institution,
+                jobSeeker.EducationDocumentScan,
+                jobSeeker.Specialty,
+                jobSeeker.WorkExperience,
+                jobSeeker.RegistrationDate
+            );
+
+            // Сохраняем изменения через репозиторий
+            await _jobSeekerRepository.UpdateAsync(existingJobSeeker);
+        }
+
     }
 }

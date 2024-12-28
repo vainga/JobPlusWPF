@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace JobPlusWPF.DBLogic
 {
+    /// Надо что-то придумать с DBContext
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly AppDbContext _context;
@@ -68,6 +69,7 @@ namespace JobPlusWPF.DBLogic
         {
             return await _dbSet.FirstOrDefaultAsync(entity => EF.Property<string>(entity, "Name") == name);
         }
+
 
     }
 }

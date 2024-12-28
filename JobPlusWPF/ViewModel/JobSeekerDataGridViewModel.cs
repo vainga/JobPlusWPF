@@ -2,6 +2,7 @@
 using JobPlusWPF.Model.Classes;
 using JobPlusWPF.Service;
 using JobPlusWPF.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -43,35 +44,29 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
         DownloadCommand = new RelayCommand(OnDownload, CanDownload);
     }
 
-    private async void LoadJobSeekers()
+    public async Task LoadJobSeekers()
     {
-        int currentUserId = _currentUserService.GetCurrentUserId(); 
-        var jobSeekers = await _jobSeekerRepository.GetAllAsync();
-
-        var filteredJobSeekers = jobSeekers.Where(js => js.UserId == currentUserId);
-
+        int currentUserId = _currentUserService.GetCurrentUserId();
         JobSeekers.Clear();
-        foreach (var jobSeeker in filteredJobSeekers)
+
+        using (var context = new AppDbContext()) // Новый экземпляр контекста
         {
-            try
-            {
-                var city =  _cityRepository.FindByIdAsync(jobSeeker.CityId);
-                var street =  _streetRepository.FindByIdAsync(jobSeeker.StreetId);
-                var educationLevel =  _educationLevelRepository.FindByIdAsync(jobSeeker.EducationLevelId);
+            var jobSeekers = await context.JobSeekers
+                .Where(js => js.UserId == currentUserId)
+                .Include(js => js.City)
+                .Include(js => js.Street)
+                .Include(js => js.EducationLevel)
+                .ToListAsync();
 
-                jobSeeker.City = await city;
-                jobSeeker.Street = await street;
-                jobSeeker.EducationLevel = await educationLevel;
-
-                JobSeekers.Add(jobSeeker);
-            }
-            catch (Exception ex)
+            foreach (var jobSeeker in jobSeekers)
             {
-                Console.WriteLine($"Ошибка при загрузке пользователя {jobSeeker.Id}: {ex.Message}");
+                if (!JobSeekers.Any(js => js.Id == jobSeeker.Id))
+                {
+                    JobSeekers.Add(jobSeeker);
+                }
             }
         }
     }
-
 
     private JobSeeker _selectedJobSeeker;
     public JobSeeker SelectedJobSeeker

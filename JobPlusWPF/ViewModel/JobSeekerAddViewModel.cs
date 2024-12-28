@@ -19,6 +19,8 @@ namespace JobPlusWPF.ViewModel
         private readonly IJobSeekerService _jobSeekerService;
         private readonly ICurrentUserService _currentUserService;
 
+        private JobSeeker _editingJobSeeker;
+
         private string _name;
         private string _surname;
         private int _age;
@@ -473,7 +475,7 @@ namespace JobPlusWPF.ViewModel
             if (Street == null && !string.IsNullOrEmpty(StreetName))
             {
                 Street = await _jobSeekerService.GetStreetByNameAsync(StreetName);
-                if (Street == null) 
+                if (Street == null)
                 {
                     Street = new StreetDirectory(StreetName);
                     await _jobSeekerService.AddStreetAsync(Street);
@@ -481,30 +483,62 @@ namespace JobPlusWPF.ViewModel
             }
 
             PassportIssueDate = PassportIssueDate.ToUniversalTime();
-            RegistrationDate = DateTime.UtcNow;
 
-            var newJobSeeker = new JobSeeker(
-                Name,
-                Surname,
-                Age,
-                PassportNumber,
-                PassportIssueDate,
-                PassportIssuedBy,
-                Phone,
-                Photo,
-                City.Id,
-                Street.Id,
-                EducationLevelId,
-                Institution,
-                EducationDocumentScan,
-                Specialty,
-                WorkExperienceYears * 12 + WorkExperienceMonths,
-                RegistrationDate,
-                userId
-            );
+            JobSeeker jobSeeker;
 
-            await _jobSeekerService.AddJobSeekerAsync(newJobSeeker);
+            if (_editingJobSeeker != null)
+            {
+                // Создание обновлённого экземпляра для редактируемого пользователя
+                jobSeeker = new JobSeeker(
+                    Name,
+                    Surname,
+                    Age,
+                    PassportNumber,
+                    PassportIssueDate,
+                    PassportIssuedBy,
+                    Phone,
+                    Photo,
+                    City.Id,
+                    Street.Id,
+                    EducationLevelId,
+                    Institution,
+                    EducationDocumentScan,
+                    Specialty,
+                    WorkExperienceYears * 12 + WorkExperienceMonths,
+                    _editingJobSeeker.RegistrationDate,
+                    userId
+                );
+
+                jobSeeker.SetId(_editingJobSeeker.Id);
+
+                await _jobSeekerService.UpdateJobSeekerAsync(jobSeeker);
+            }
+            else
+            {
+                jobSeeker = new JobSeeker(
+                    Name,
+                    Surname,
+                    Age,
+                    PassportNumber,
+                    PassportIssueDate,
+                    PassportIssuedBy,
+                    Phone,
+                    Photo,
+                    City.Id,
+                    Street.Id,
+                    EducationLevelId,
+                    Institution,
+                    EducationDocumentScan,
+                    Specialty,
+                    WorkExperienceYears * 12 + WorkExperienceMonths,
+                    DateTime.UtcNow,
+                    userId
+                );
+
+                await _jobSeekerService.AddJobSeekerAsync(jobSeeker);
+            }
         }
+
 
 
         private void ClearFields()
@@ -551,7 +585,9 @@ namespace JobPlusWPF.ViewModel
         }
 
         public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
+            : this(navigator, jobSeekerService, currentUserService)
         {
+            _editingJobSeeker = jobSeeker;
             if (jobSeeker != null)
             {
                 Name = jobSeeker.Name;

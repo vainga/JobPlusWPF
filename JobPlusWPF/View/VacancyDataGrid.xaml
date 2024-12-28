@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="JobPlusWPF.View.VacancyDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JobPlusWPF.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <DataGrid x:Name="vacanciesDataGrid" 
+                  ItemsSource="{Binding Vacancies}" 
+                  SelectedItem="{Binding SelectedVacancy}"
+                  AutoGenerateColumns="False" 
+                  Margin="10"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  ColumnWidth="Auto"
+                  HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <!-- Название должности -->
+                <DataGridTextColumn Header="Должность" Binding="{Binding Position}" Width="*" />
+
+                <!-- Зарплата -->
+                <DataGridTextColumn Header="Зарплата" Binding="{Binding Salary}" Width="Auto" />
+
+                <!-- Название работодателя -->
+                <DataGridTextColumn Header="Работодатель" Binding="{Binding Employer.Name}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

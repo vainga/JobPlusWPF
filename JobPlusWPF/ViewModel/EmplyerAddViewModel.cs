@@ -145,6 +145,16 @@ namespace JobPlusWPF.ViewModel
 
         }
 
+        public EmplyerAddViewModel(INavigator navigator, IEmplyerService employerService, ICurrentUserService currentUserService, Employer employer) : this(navigator, employerService, currentUserService)
+        {
+            if (employer != null)
+            {
+                Name = employer.Name;
+                CityName = employer.City.Name;
+                StreetName = employer.Name;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

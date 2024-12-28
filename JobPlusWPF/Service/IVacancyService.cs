@@ -10,5 +10,6 @@ namespace JobPlusWPF.Service
     public interface IVacancyService
     {
         Task AddVacancyAsync(Vacancy vacancy);
+        Task<IEnumerable<Vacancy>> GetAllVacanciesAsync();
     }
 }

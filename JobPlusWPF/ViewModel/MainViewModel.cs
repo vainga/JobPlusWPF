@@ -16,6 +16,8 @@ using JobPlusWPF.Service;
 
 namespace JobPlusWPF.ViewModel
 {
+
+    //Заменить репозитории на сервисы
     public class MainViewModel : INotifyPropertyChanged
     {
         private readonly INavigator _navigationService;
@@ -29,9 +31,17 @@ namespace JobPlusWPF.ViewModel
         private readonly IRepository<EducationLevel> _educationLevelRepository;
 
         private readonly IRepository<JobSeeker> _jobSeekerRepository;
+        private readonly IRepository<Employer> _employerRepository;
+        private readonly IRepository<Vacancy> _vacancyRepository;
+
+        //private readonly IRepository<Employer> _employerRepository;
+        //private readonly IRepository<Vacancy> _vacancyRepository;
 
         private string _selectedRole;
         private ObservableCollection<JobSeeker> _jobSeekers;
+        private ObservableCollection<Employer> _employers;
+        private ObservableCollection<Vacancy> _vacancies;
+
         private UserControl _currentUserControl;
 
         public ICommand DownloadCommand { get; }
@@ -39,6 +49,11 @@ namespace JobPlusWPF.ViewModel
         public ICommand AddCommand { get; }
         public ICommand DeleteCommand { get; }
 
+        public ICommand EditEmployerCommand { get; }
+        public ICommand DeleteEmployerCommand { get; }
+
+        public ICommand EditVacancyCommand { get; }
+        public ICommand DeleteVacancyCommand { get; }
 
         public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
         {
@@ -57,7 +72,7 @@ namespace JobPlusWPF.ViewModel
                 {
                     _selectedRole = value;
                     OnPropertyChanged();
-                    LoadUserControl(); // Загружаем нужный UserControl
+                    LoadUserControl();
                 }
             }
         }
@@ -68,6 +83,26 @@ namespace JobPlusWPF.ViewModel
             set
             {
                 _jobSeekers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Employer> Employers
+        {
+            get => _employers ??= new ObservableCollection<Employer>();
+            set
+            {
+                _employers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Vacancy> Vacancies
+        {
+            get => _vacancies ??= new ObservableCollection<Vacancy>();
+            set
+            {
+                _vacancies = value;
                 OnPropertyChanged();
             }
         }
@@ -100,15 +135,22 @@ namespace JobPlusWPF.ViewModel
 
             AddCommand = new RelayCommand(OnAdd, CanAdd);
             DownloadCommand = new RelayCommand(OnDownload);
-            DeleteCommand = new RelayCommand(OnDelete, CanDelete);
+            DeleteCommand = new RelayCommand(OnDeleteJobSeeker, CanDeleteJobSeeker);
             RefreshCommand = new RelayCommand(OnRefresh);
-            EditCommand = new RelayCommand(OnEdit, CanEdit);
+
+            EditCommand = new RelayCommand(OnEditJobSeeker, CanEditJobSeeker);
+
+            EditEmployerCommand = new RelayCommand(OnEditEmployer, CanEditEmployer);
+            DeleteEmployerCommand = new RelayCommand(OnDeleteEmployer, CanDeleteEmployer);
+
+            //EditVacancyCommand = new RelayCommand(OnEditVacancy, CanEditVacancy);
+            DeleteVacancyCommand = new RelayCommand(OnDeleteVacancy, CanDeleteVacancy);
+
+            //LoadUserControl();
 
         }
 
-
-        ///Очень плохо, надо изменить потом 
-        private async void OnDelete(object parameter)
+        private async void OnDeleteJobSeeker(object parameter)
         {
             if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
             {
@@ -132,7 +174,7 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
-        private bool CanDelete(object parameter)
+        private bool CanDeleteJobSeeker(object parameter)
         {
             if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
             {
@@ -142,16 +184,81 @@ namespace JobPlusWPF.ViewModel
             return false;
         }
 
+        private async void OnDeleteEmployer(object parameter)
+        {
+            if (CurrentUserControl is EmplyerDataGrid dataGrid && dataGrid.DataContext is EmplyerDataGridViewModel emplyerAddViewModel)
+            {
+                var selectedEmployer = emplyerAddViewModel.SelectedEmployer;
+
+                if (selectedEmployer != null)
+                {
+                    var result = MessageBox.Show($"Вы уверены, что хотите удалить {selectedEmployer.Name}?",
+                                                 "Подтверждение удаления",
+                                                 MessageBoxButton.YesNo,
+                                                 MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await _employerRepository.DeleteAsync(selectedEmployer.Id);
+                        Employers.Remove(selectedEmployer);
+                        emplyerAddViewModel.Employers.Remove(selectedEmployer);
+                        emplyerAddViewModel.SelectedEmployer = null;
+                    }
+                }
+            }
+        }
+
+        private bool CanDeleteEmployer(object parameter)
+        {
+            if (CurrentUserControl is EmplyerDataGrid dataGrid && dataGrid.DataContext is EmplyerDataGridViewModel emplyerAddViewModel)
+            {
+                return emplyerAddViewModel.SelectedEmployer != null;
+            }
+
+            return false;
+        }
+
+        private async void OnDeleteVacancy(object parameter)
+        {
+            if (CurrentUserControl is VacancyDataGrid dataGrid && dataGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                var selectedVacancy = vacancyViewModel.SelectedVacancy;
+
+                if (selectedVacancy != null)
+                {
+                    var result = MessageBox.Show($"Вы уверены, что хотите удалить вакансию {selectedVacancy.Position}?",
+                                                 "Подтверждение удаления",
+                                                 MessageBoxButton.YesNo,
+                                                 MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await _vacancyRepository.DeleteAsync(selectedVacancy.Id);
+                        Vacancies.Remove(selectedVacancy);
+                        vacancyViewModel.Vacancies.Remove(selectedVacancy);
+                        vacancyViewModel.SelectedVacancy = null;
+                    }
+                }
+            }
+        }
+
+        private bool CanDeleteVacancy(object parameter)
+        {
+            if (CurrentUserControl is VacancyDataGrid dataGrid && dataGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                return vacancyViewModel.SelectedVacancy != null;
+            }
+
+            return false;
+        }
+
+
         public ICommand EditCommand { get; }
-        private async void OnEdit(object parameter)
+        private async void OnEditJobSeeker(object parameter)
         {
             if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
             {
                 var selectedJobSeeker = jobSeekerViewModel.SelectedJobSeeker;
-
-                //selectedJobSeeker.City = await _cityRepository.FindByIdAsync(selectedJobSeeker.CityId);
-                //selectedJobSeeker.Street = await _streetRepository.FindByIdAsync(selectedJobSeeker.StreetId);
-                //selectedJobSeeker.EducationLevel = await _educationLevelRepository.FindByIdAsync(selectedJobSeeker.EducationLevelId);
 
                 if (selectedJobSeeker != null)
                 {
@@ -163,18 +270,17 @@ namespace JobPlusWPF.ViewModel
                     );
 
                     var editWindow = new JobSeekerAddWindow(viewModel);
-                    bool? result = editWindow.ShowDialog();
+                    editWindow.ShowDialog();
 
-                    if (result == true)
-                    {
-                        await _jobSeekerRepository.UpdateAsync(selectedJobSeeker);
-                        jobSeekerViewModel.SelectedJobSeeker = selectedJobSeeker;
-                    }
+                    //await _jobSeekerRepository.DeleteAsync(selectedJobSeeker.Id);
+                    OnRefresh(null);
+                    //await _jobSeekerRepository.UpdateAsync(selectedJobSeeker);
+                    //OnDeleteJobSeeker(jobSeekerViewModel.SelectedJobSeeker);
                 }
             }
         }
 
-        private bool CanEdit(object parameter)
+        private bool CanEditJobSeeker(object parameter)
         {
             if (CurrentUserControl is JobSekeerDataGrid dataGrid && dataGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
             {
@@ -184,25 +290,81 @@ namespace JobPlusWPF.ViewModel
             return false;
         }
 
-
-        private void LoadUserControl()
+        private async void OnEditEmployer(object parameter)
         {
-            if (SelectedRole == "Соискатели")
+            if (CurrentUserControl is EmplyerDataGrid dataGrid && dataGrid.DataContext is EmplyerDataGridViewModel employerViewModel)
             {
-                var viewModel = _serviceProvider.GetRequiredService<JobSeekerDataGridViewModel>();
-                CurrentUserControl = new JobPlusWPF.View.JobSekeerDataGrid(viewModel);
-            }
-            else if(SelectedRole == "Работодатели")
-            {
-                var viewModel = _serviceProvider.GetRequiredService<EmplyerDataGridViewModel>();
-                CurrentUserControl = new JobPlusWPF.View.EmplyerDataGrid(viewModel);
-            }
-            else
-            {
-                // Очистка или замена на другой UserControl
-                CurrentUserControl = null;
+                var selectedEmployer = employerViewModel.SelectedEmployer;
+
+                if (selectedEmployer != null)
+                {
+                    var viewModel = new EmplyerAddViewModel(
+                        _navigationService,
+                        _emplyerService,
+                        _currentUserService,
+                        selectedEmployer
+                    );
+
+                    var editWindow = new AddEmployer(viewModel);
+                    bool? result = editWindow.ShowDialog();
+
+                    if (result == true)
+                    {
+                        await _employerRepository.UpdateAsync(selectedEmployer);
+                        employerViewModel.SelectedEmployer = selectedEmployer;
+                    }
+                }
             }
         }
+
+        private bool CanEditEmployer(object parameter)
+        {
+            if (CurrentUserControl is EmplyerDataGrid dataGrid && dataGrid.DataContext is EmplyerDataGridViewModel employerViewModel)
+            {
+                return employerViewModel.SelectedEmployer != null;
+            }
+
+            return false;
+        }
+
+
+
+        private async void LoadUserControl()
+        {
+            try
+            {
+                switch (SelectedRole)
+                {
+                    case "Соискатели":
+                        var jobSeekerViewModel = _serviceProvider.GetRequiredService<JobSeekerDataGridViewModel>();
+                        await jobSeekerViewModel.LoadJobSeekers();
+                        CurrentUserControl = new JobSekeerDataGrid(jobSeekerViewModel);
+                        break;
+
+                    case "Работодатели":
+                        var employerViewModel = _serviceProvider.GetRequiredService<EmplyerDataGridViewModel>();
+                        await employerViewModel.LoadEmployers();
+                        CurrentUserControl = new EmplyerDataGrid(employerViewModel);
+                        break;
+
+                    case "Вакансии":
+                        var vacancyViewModel = _serviceProvider.GetRequiredService<VacancyDataGridViewModel>();
+                        await vacancyViewModel.LoadVacanciesAsync();
+                        CurrentUserControl = new VacancyDataGrid(vacancyViewModel);
+                        break;
+
+                    default:
+                        CurrentUserControl = null;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
 
         private void OnDownload(object parameter)
         {
@@ -248,20 +410,36 @@ namespace JobPlusWPF.ViewModel
 
         }
 
-
-
         private async void OnRefresh(object parameter)
         {
-            var jobSeekers = await _jobSeekerRepository.GetAllAsync();
-
-            JobSeekers.Clear();
-
-            foreach (var jobSeeker in jobSeekers)
+            switch (SelectedRole)
             {
-                JobSeekers.Add(jobSeeker);
+                case "Соискатели":
+                    var jobSeekerViewModel = CurrentUserControl?.DataContext as JobSeekerDataGridViewModel;
+                    if (jobSeekerViewModel != null)
+                    {
+                        await jobSeekerViewModel.LoadJobSeekers();
+                    }
+                    break;
+
+                case "Работодатели":
+                    var employerViewModel = CurrentUserControl?.DataContext as EmplyerDataGridViewModel;
+                    if (employerViewModel != null)
+                    {
+                        await employerViewModel.LoadEmployers();
+                    }
+                    break;
+
+                case "Вакансии":
+                    var vacancyViewModel = CurrentUserControl?.DataContext as VacancyDataGridViewModel;
+                    if (vacancyViewModel != null)
+                    {
+                        await vacancyViewModel.LoadVacanciesAsync();
+                    }
+                    break;
             }
-            LoadUserControl();
         }
+
 
 
         private bool CanAdd(object parameter) => !string.IsNullOrEmpty(SelectedRole);

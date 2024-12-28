@@ -47,4 +47,47 @@ public class JobSeeker
         RegistrationDate = registrationDate;
         UserId = userId;
     }
+
+    public void SetId(int id)
+    {
+        Id = id;
+    }
+
+    public void Update(
+    string name,
+    string surname,
+    int age,
+    string passportNumber,
+    DateTime passportIssueDate,
+    string passportIssuedBy,
+    string phone,
+    string photo,
+    int cityId,
+    int streetId,
+    int educationLevelId,
+    string institution,
+    string educationDocumentScan,
+    string specialty,
+    int workExperience,
+    DateTime registrationDate)
+    {
+        Name = name;
+        Surname = surname;
+        Age = age;
+        PassportNumber = passportNumber;
+        PassportIssueDate = passportIssueDate;
+        PassportIssuedBy = passportIssuedBy;
+        Phone = phone;
+        Photo = photo;
+        CityId = cityId;
+        StreetId = streetId;
+        EducationLevelId = educationLevelId;
+        Institution = institution;
+        EducationDocumentScan = educationDocumentScan;
+        Specialty = specialty;
+        WorkExperience = workExperience;
+        RegistrationDate = registrationDate;
+    }
+
+
 }

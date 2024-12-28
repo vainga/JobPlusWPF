@@ -1,6 +1,7 @@
 ﻿using JobPlusWPF.DBLogic;
 using JobPlusWPF.Model.Classes;
 using JobPlusWPF.Service;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -52,32 +53,56 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
-        private async Task LoadEmployers()
+        //public async Task LoadEmployers()
+        //{
+        //    int currentUserId = _currentUserService.GetCurrentUserId();
+        //    var employers = await _employerRepository.GetAllAsync();
+
+        //    var filteredEmployers = employers.Where(e => e.UserId == currentUserId);
+
+        //    Employers.Clear();
+        //    foreach (var employer in filteredEmployers)
+        //    {
+        //        try
+        //        {
+        //            var city = await _cityRepository.FindByIdAsync(employer.CityId);
+        //            var street = await _streetRepository.FindByIdAsync(employer.StreetId);
+
+        //            employer.City = city;
+        //            employer.Street = street;
+
+        //            Employers.Add(employer);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"Ошибка при загрузке работодателя {employer.Id}: {ex.Message}");
+        //        }
+        //    }
+        //}
+
+        public async Task LoadEmployers()
         {
             int currentUserId = _currentUserService.GetCurrentUserId();
-            var employers = await _employerRepository.GetAllAsync();
-
-            var filteredEmployers = employers.Where(e => e.UserId == currentUserId);
-
             Employers.Clear();
-            foreach (var employer in filteredEmployers)
+
+            using (var context = new AppDbContext()) // Новый экземпляр контекста
             {
-                try
-                {
-                    var city = await _cityRepository.FindByIdAsync(employer.CityId);
-                    var street = await _streetRepository.FindByIdAsync(employer.StreetId);
+                var employers = await context.Employers
+                    .Where(e => e.UserId == currentUserId)
+                    .Include(e => e.City)
+                    .Include(e => e.Street)
+                    .ToListAsync();
 
-                    employer.City = city;
-                    employer.Street = street;
-
-                    Employers.Add(employer);
-                }
-                catch (Exception ex)
+                foreach (var employer in employers)
                 {
-                    Console.WriteLine($"Ошибка при загрузке работодателя {employer.Id}: {ex.Message}");
+                    if (!Employers.Any(e => e.Id == employer.Id))
+                    {
+                        Employers.Add(employer);
+                    }
                 }
             }
         }
+
 
 
         public EmplyerDataGridViewModel(IRepository<Employer> employerRepository, ICurrentUserService currentUserService, IRepository<CityDirectory> cityRepository, IRepository<StreetDirectory> streetRepository)

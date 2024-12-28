@@ -58,6 +58,7 @@ namespace JobPlusWPF
             services.AddScoped<EmplyerAddViewModel>();
             services.AddTransient<EmplyerDataGridViewModel>();
             services.AddScoped<AddVacancyViewModel>();
+            services.AddTransient<VacancyDataGridViewModel>();
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
