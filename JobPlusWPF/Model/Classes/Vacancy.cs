@@ -15,6 +15,8 @@ namespace JobPlusWPF.Model.Classes
         public int EmployerId { get; private set; }
         public Employer Employer { get; private set; }
 
+        public bool IsArchived { get; private set; }
+
         public Vacancy(string position, int employerId, decimal salary, string description)
         {
             Position = position;
@@ -31,8 +33,13 @@ namespace JobPlusWPF.Model.Classes
             EmployerId = employerId;
             Salary = salary;
             Description = description;
+            IsArchived = false;
         }
 
+        public void Archive(bool isarchive = true)
+        {
+            IsArchived = isarchive;
+        }
     }
 
 }

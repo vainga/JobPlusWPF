@@ -98,19 +98,7 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
-        // Видимость ComboBox (для показа/скрытия)
-        public bool IsVacancyComboBoxVisible
-        {
-            get => SelectedStatus.Id == 2;
-            set
-            {
-                if (_isVacancyComboBoxVisible != value)
-                {
-                    _isVacancyComboBoxVisible = value;
-                    OnPropertyChanged(nameof(IsVacancyComboBoxVisible));
-                }
-            }
-        }
+        public bool IsVacancyComboBoxVisible => SelectedStatus?.Id == 2;
         public bool IsAllowanceTextBoxVisible => SelectedStatus?.Id == 3;
 
 
@@ -637,6 +625,7 @@ namespace JobPlusWPF.ViewModel
                 if (SelectedStatus.Id == 2)
                 {
                     var archiveEntry = new ArchiveEntry(SelectedVacancy.Id, jobSeeker.Id, DateTime.UtcNow, userId);
+                    await _vacancyService.ArchiveVacancyAsync(SelectedVacancy);
                     await _archiveService.AddArchiveEntryAsync(archiveEntry);
                 }
 
@@ -759,6 +748,7 @@ namespace JobPlusWPF.ViewModel
             Vacancies = new ObservableCollection<Vacancy>();
             LoadVacanciesAsync();
             _archiveService = archiveService;
+            _vacancyService = vacancyService;
         }
 
         public async Task LoadVacanciesAsync()
@@ -769,7 +759,7 @@ namespace JobPlusWPF.ViewModel
             using (var context = new AppDbContext())
             {
                 var vacancies = await context.Vacancies
-                    .Where(v => v.Employer.UserId == currentUserId)
+                    .Where(v => v.Employer.UserId == currentUserId && !v.IsArchived)
                     .Include(v => v.Employer)
                     .ToListAsync();
                 foreach (var vacancy in vacancies)

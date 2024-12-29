@@ -54,5 +54,15 @@ namespace JobPlusWPF.Service
             await _vacancyRepository.UpdateAsync(existingVacancy);
         }
 
+        public async Task ArchiveVacancyAsync(Vacancy vacancy)
+        {
+            var existingVacancy = await _vacancyRepository.FindByIdAsync(vacancy.Id);
+            if (existingVacancy == null)
+                throw new InvalidOperationException($"JobSeeker with ID {vacancy.Id} does not exist.");
+
+            existingVacancy.Archive();
+            await _vacancyRepository.UpdateAsync(existingVacancy);
+        }
+
     }
 }

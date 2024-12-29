@@ -82,7 +82,7 @@ namespace JobPlusWPF.ViewModel
             using (var context = new AppDbContext()) // Новый экземпляр контекста
             {
                 var vacancies = await context.Vacancies
-                    .Where(v => v.Employer.UserId == currentUserId)
+                    .Where(v => v.Employer.UserId == currentUserId && !v.IsArchived)
                     .Include(v => v.Employer)
                     .ToListAsync();
                 foreach (var vacancy in vacancies)
