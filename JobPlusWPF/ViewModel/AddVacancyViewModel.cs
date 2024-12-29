@@ -26,7 +26,10 @@ namespace JobPlusWPF.ViewModel
         private string _position;
         private decimal _salary;
         private Employer _selectedEmployer;
+        private string _description;
         private ObservableCollection<Employer> _employers;
+
+        private Vacancy _existingVacancy;
 
         public string Position
         {
@@ -50,6 +53,19 @@ namespace JobPlusWPF.ViewModel
                 {
                     _salary = value;
                     OnPropertyChanged(nameof(Salary));
+                }
+            }
+        }
+
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                if (_description != value)
+                {
+                    _description = value;
+                    OnPropertyChanged(nameof(Description));
                 }
             }
         }
@@ -87,21 +103,23 @@ namespace JobPlusWPF.ViewModel
 
         private async void Save(object parameter)
         {
+            Vacancy vacancy;
             if (SelectedEmployer == null || string.IsNullOrWhiteSpace(Position) /*|| string.IsNullOrWhiteSpace(Salary)*/)
             {
-                // Валидация: убедитесь, что все обязательные поля заполнены
                 return;
             }
+            if (_existingVacancy != null)
+            {
+                vacancy = new Vacancy(Position, SelectedEmployer.Id, Salary, Description);
+                vacancy.SetId(_existingVacancy.Id);
+                await _vacancyService.UpdateVacancyAsync(vacancy);
+            }
+            else
+            {
+                vacancy = new Vacancy(Position, SelectedEmployer.Id, Salary, Description);
+                await _vacancyService.AddVacancyAsync(vacancy);
+            }
 
-            //if (!int.TryParse(Salary, out var parsedSalary))
-            //{
-            //    // Если зарплата введена некорректно, можно уведомить пользователя или просто выйти
-            //    return;
-            //}
-
-            var newVacancy = new Vacancy(Position, SelectedEmployer.Id, Salary);
-
-            await _vacancyService.AddVacancyAsync(newVacancy);
             _navigator.CloseWindow<AddVacancy>();
         }
 
@@ -125,6 +143,18 @@ namespace JobPlusWPF.ViewModel
             LoadEmployersAsync();
         }
 
+        public AddVacancyViewModel(INavigator navigator, IVacancyService vacancyService, ICurrentUserService currentUserService, IEmplyerService emplyerService, Vacancy vacancy) : this(navigator, vacancyService, currentUserService, emplyerService)
+        {
+            if (vacancy != null)
+            {
+                _existingVacancy = vacancy;
+
+                Position = vacancy.Position;
+                SelectedEmployer = vacancy.Employer;
+                Salary = vacancy.Salary;
+                Description = vacancy.Description;
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

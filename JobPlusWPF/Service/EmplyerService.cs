@@ -91,6 +91,26 @@ namespace JobPlusWPF.Service
             await _emplyerRepository.DeleteAsync(employer.Id);
         }
 
+        public async Task UpdareEmployerAsync(Employer employer)
+        {
+            if (employer == null)
+                throw new ArgumentNullException(nameof(employer));
+
+            // Проверяем существование JobSeeker в базе данных
+            var existingEmployer = await _emplyerRepository.FindByIdAsync(employer.Id);
+            if (existingEmployer == null)
+                throw new InvalidOperationException($"JobSeeker with ID {employer.Id} does not exist.");
+
+            // Обновляем поля
+            existingEmployer.Update(
+                employer.Name,
+                employer.CityId,
+                employer.StreetId,
+                employer.Phone
+            );
+
+            await _emplyerRepository.UpdateAsync(existingEmployer);
+        }
 
     }
 }

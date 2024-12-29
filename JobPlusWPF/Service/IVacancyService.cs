@@ -12,5 +12,6 @@ namespace JobPlusWPF.Service
         Task AddVacancyAsync(Vacancy vacancy);
         Task<IEnumerable<Vacancy>> GetAllVacanciesAsync();
         Task<IEnumerable<Vacancy>> GetVacanciesByEmployerIdAsync(int employerId);
+        Task UpdateVacancyAsync(Vacancy vacancy);
     }
 }

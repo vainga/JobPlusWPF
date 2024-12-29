@@ -25,6 +25,7 @@ namespace JobPlusWPF.ViewModel
         private readonly IServiceProvider _serviceProvider;
         private readonly IJobSeekerService _jobSeekerService;
         private readonly IEmplyerService _emplyerService;
+        private readonly IVacancyService _vacancyService;
         private readonly ICurrentUserService _currentUserService;
 
         private readonly IRepository<CityDirectory> _cityRepository;
@@ -115,7 +116,7 @@ namespace JobPlusWPF.ViewModel
 
         private readonly AppDbContext _dbContext;
 
-        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository)
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository, IVacancyService vacancyService)
         {
             _navigationService = navigator;
             _dbContext = dbContext;
@@ -135,7 +136,8 @@ namespace JobPlusWPF.ViewModel
             DownloadCommand = new RelayCommand(OnDownload);
             DeleteCommand = new RelayCommand(OnDelete, CanDelete);
             RefreshCommand = new RelayCommand(OnRefresh);
-            EditCommand = new RelayCommand(OnEditJobSeeker, CanEditJobSeeker);
+            EditCommand = new RelayCommand(OnEdit, CanEdit);
+            _vacancyService = vacancyService;
 
 
             //LoadUserControl();
@@ -174,6 +176,39 @@ namespace JobPlusWPF.ViewModel
                return CanDeleteEmployer(parameter);
             }
 
+            return false;
+        }
+
+        private async void OnEdit(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid jobSeekerGrid && jobSeekerGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                OnEditJobSeeker(parameter);
+            }
+            else if (CurrentUserControl is VacancyDataGrid vacancyGrid && vacancyGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                OnEditVacancy(parameter);
+            }
+            else if (CurrentUserControl is EmplyerDataGrid employerGrid && employerGrid.DataContext is EmplyerDataGridViewModel employerViewModel)
+            {
+                OnEditEmployer(parameter);
+            }
+        }
+
+        private bool CanEdit(object parameter)
+        {
+            if (CurrentUserControl is JobSekeerDataGrid jobSeekerGrid && jobSeekerGrid.DataContext is JobSeekerDataGridViewModel jobSeekerViewModel)
+            {
+                return CanEditJobSeeker(parameter);
+            }
+            else if (CurrentUserControl is VacancyDataGrid vacancyGrid && vacancyGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                return CanEditVacancy(parameter);
+            }
+            else if (CurrentUserControl is EmplyerDataGrid employerGrid && employerGrid.DataContext is EmplyerDataGridViewModel employerViewModel)
+            {
+                return CanEditEmployer(parameter);
+            }
             return false;
         }
 
@@ -300,10 +335,7 @@ namespace JobPlusWPF.ViewModel
                     var editWindow = new JobSeekerAddWindow(viewModel);
                     editWindow.ShowDialog();
 
-                    //await _jobSeekerRepository.DeleteAsync(selectedJobSeeker.Id);
                     OnRefresh(null);
-                    //await _jobSeekerRepository.UpdateAsync(selectedJobSeeker);
-                    //OnDeleteJobSeeker(jobSeekerViewModel.SelectedJobSeeker);
                 }
             }
         }
@@ -335,12 +367,9 @@ namespace JobPlusWPF.ViewModel
 
                     var editWindow = new AddEmployer(viewModel);
                     bool? result = editWindow.ShowDialog();
+                    
+                    OnRefresh(null);
 
-                    if (result == true)
-                    {
-                        await _employerRepository.UpdateAsync(selectedEmployer);
-                        employerViewModel.SelectedEmployer = selectedEmployer;
-                    }
                 }
             }
         }
@@ -355,6 +384,39 @@ namespace JobPlusWPF.ViewModel
             return false;
         }
 
+        private async void OnEditVacancy(object parameter)
+        {
+            if (CurrentUserControl is VacancyDataGrid dataGrid && dataGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                var selectedVacancy = vacancyViewModel.SelectedVacancy;
+
+                if (selectedVacancy != null)
+                {
+                    var viewModel = new AddVacancyViewModel(
+                        _navigationService,
+                        _vacancyService,
+                        _currentUserService,
+                        _emplyerService,
+                        selectedVacancy
+                    );
+
+                    var editWindow = new AddVacancy(viewModel);
+                    bool? result = editWindow.ShowDialog();
+
+                    OnRefresh(null);
+
+                }
+            }
+        }
+
+        private bool CanEditVacancy(object parameter)
+        {
+            if (CurrentUserControl is VacancyDataGrid dataGrid && dataGrid.DataContext is VacancyDataGridViewModel vacancyViewModel)
+            {
+                return vacancyViewModel.SelectedVacancy != null;
+            }
+            return false;
+        }
 
 
         private async void LoadUserControl()

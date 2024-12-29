@@ -18,5 +18,6 @@ namespace JobPlusWPF.Service
         Task<IEnumerable<Employer>> GetAllEmployersAsync();
         Task<Employer> GetEmployerByIdAsync(int id);
         Task DeleteEmployerAsync(Employer employer);
+        Task UpdareEmployerAsync(Employer employer);
     }
 }

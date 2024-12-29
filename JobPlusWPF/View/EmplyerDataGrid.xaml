@@ -17,7 +17,7 @@
           ColumnWidth="Auto"
           HeadersVisibility="Column">
             <DataGrid.Columns>
-                <!-- Название оргназации -->
+                <!-- Название организации -->
                 <DataGridTextColumn Header="Название организации" Binding="{Binding Name}" Width="Auto" />
 
                 <!-- Город -->
@@ -26,7 +26,8 @@
                 <!-- Улица -->
                 <DataGridTextColumn Header="Улица" Binding="{Binding Street.Name}" Width="Auto" />
 
-
+                <!-- Номер телефона -->
+                <DataGridTextColumn Header="Номер телефона" Binding="{Binding Phone}" Width="Auto" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

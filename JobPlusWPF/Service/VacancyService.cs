@@ -33,5 +33,24 @@ namespace JobPlusWPF.Service
         {
             return await _vacancyRepository.FindAsync(vacancy => vacancy.EmployerId == employerId);
         }
+
+        public async Task UpdateVacancyAsync(Vacancy vacancy)
+        {
+            if (vacancy == null) throw new ArgumentNullException(nameof(vacancy));
+
+            var existingVacancy = await _vacancyRepository.FindByIdAsync(vacancy.Id);
+            if (existingVacancy == null)
+                throw new InvalidOperationException($"JobSeeker with ID {vacancy.Id} does not exist.");
+
+            // Обновляем поля
+            existingVacancy.Update(
+                vacancy.Position,
+                vacancy.EmployerId,
+                vacancy.Salary,
+                vacancy.Description
+            );
+
+            await _vacancyRepository.UpdateAsync(existingVacancy);
+        }
     }
 }

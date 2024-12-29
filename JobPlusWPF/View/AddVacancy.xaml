@@ -38,6 +38,16 @@
                     <materialDesign:HintAssist.Hint>Работодатель</materialDesign:HintAssist.Hint>
                 </ComboBox>
 
+                <!-- Поле для описания вакансии -->
+                <TextBox Name="DescriptionTextBox" Width="400" Height="150" Margin="0,10,0,0" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         TextWrapping="Wrap" 
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}">
+                    <materialDesign:HintAssist.Hint>Описание вакансии</materialDesign:HintAssist.Hint>
+                </TextBox>
+
                 <!-- Кнопки для сохранения и отмены -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                     <Button Content="Сохранить" Width="105" Margin="5" Style="{StaticResource MaterialDesignFlatButton}" Command ="{Binding SaveCommand}" />

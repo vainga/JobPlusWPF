@@ -25,6 +25,9 @@
 
                 <!-- Название работодателя -->
                 <DataGridTextColumn Header="Работодатель" Binding="{Binding Employer.Name}" Width="*" />
+
+                <!-- Описание -->
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="2*" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

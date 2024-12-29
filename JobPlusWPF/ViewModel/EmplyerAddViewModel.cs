@@ -21,11 +21,14 @@ namespace JobPlusWPF.ViewModel
         public ICommand CancelCommand { get; }
         public ICommand SaveCommand { get; }
 
+        private Employer _editingEmployer;
+
         private string _name;
         private string _cityName;
         private CityDirectory _city;
         private string _streetName;
         private StreetDirectory _street;
+        public string _phone;
 
         public string Name
         {
@@ -92,6 +95,20 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
+        public string Phone
+        {
+            get => _phone;
+            set
+            {
+                if (_phone != value)
+                {
+                    _phone = value;
+                    OnPropertyChanged(nameof(Phone));
+                }
+            }
+
+        }
+
         private void Cancel(object parameter)
         {
             _navigator.CloseWindow<AddEmployer>();
@@ -121,15 +138,35 @@ namespace JobPlusWPF.ViewModel
                 }
             }
 
-            var newEmployer = new Employer(
-                Name,
-                City.Id,
-                Street.Id,
-                userId
-                );
+            Employer employer;
 
-            await _emloyerService.AddEmplyerAsync(newEmployer);
+            if (_editingEmployer != null)
+            {
 
+                 employer = new Employer(
+                    Name,
+                    City.Id,
+                    Street.Id,
+                    Phone,
+                    userId
+                    );
+
+                employer.SetId(_editingEmployer.Id);
+
+                await _emloyerService.UpdareEmployerAsync(employer);
+            }
+            else
+            {
+                employer = new Employer(
+                    Name,
+                    City.Id,
+                    Street.Id,
+                    Phone,
+                    userId
+                    );
+
+                await _emloyerService.AddEmplyerAsync(employer);
+            }
             _navigator.CloseWindow<AddEmployer>();
 
         }
@@ -149,9 +186,12 @@ namespace JobPlusWPF.ViewModel
         {
             if (employer != null)
             {
+                _editingEmployer = employer;
+
                 Name = employer.Name;
                 CityName = employer.City.Name;
                 StreetName = employer.Name;
+                Phone = employer.Phone;
             }
         }
 
