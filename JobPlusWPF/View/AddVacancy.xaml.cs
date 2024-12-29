@@ -25,5 +25,14 @@ namespace JobPlusWPF.View
             InitializeComponent();
             DataContext = viewModel;
         }
+        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    var viewModel = (AddVacancyViewModel)DataContext;
+
+        //    viewModel.Position = string.Empty;
+        //    viewModel.Salary = 0;
+        //    viewModel.Description = string.Empty;
+        //    viewModel.SelectedEmployer = null;
+        //}
     }
 }

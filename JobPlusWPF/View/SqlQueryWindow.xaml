@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JobPlusWPF.View"
         mc:Ignorable="d"
-        Title="Окно запросов" Height="500" Width="800"
-        Closing="Window_Closing">
+        Title="Окно запросов" Height="500" Width="800">
     <Grid>
         <!-- Привязка для текста SqlQuery -->
         <TextBox Name="SqlQueryTextBox" Height="100" VerticalAlignment="Top" Margin="10" 

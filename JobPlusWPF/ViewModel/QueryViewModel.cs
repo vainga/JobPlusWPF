@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Threading.Tasks;
@@ -53,11 +52,16 @@ namespace JobPlusWPF.ViewModel
 
             try
             {
-                QueryResult = await ExecuteSqlQuery(SqlQuery);
+                // Сброс результата перед выполнением нового запроса
+                QueryResult = null;
+
+                // Выполнение запроса
+                var result = await ExecuteSqlQuery(SqlQuery);
+                QueryResult = result;
             }
             catch (Exception ex)
             {
-                // Handle any query errors
+                // Обработка ошибок
                 Console.WriteLine($"Error executing query: {ex.Message}");
             }
         }
@@ -66,18 +70,33 @@ namespace JobPlusWPF.ViewModel
         {
             var result = new DataTable();
 
-            using (var connection = _context.Database.GetDbConnection())
+            try
             {
-                await connection.OpenAsync();
-
-                using (var command = new NpgsqlCommand(query, (NpgsqlConnection)connection))
-                using (var reader = await command.ExecuteReaderAsync())
+                await using (var connection = new NpgsqlConnection(_context.Database.GetConnectionString()))
                 {
-                    result.Load(reader);
+                    await connection.OpenAsync();
+
+                    await using (var command = new NpgsqlCommand(query, connection))
+                    {
+                        await using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            result.Load(reader);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing query: {ex.Message}");
             }
 
             return result;
+        }
+
+        public void ClearData()
+        {
+            SqlQuery = string.Empty;
+            QueryResult = null; // Сброс результата запроса
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

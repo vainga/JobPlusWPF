@@ -27,11 +27,5 @@ namespace JobPlusWPF.View
             DataContext = viewModel;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var viewModel = (QueryViewModel)DataContext;
-            viewModel.SqlQuery = string.Empty;
-            viewModel.QueryResult = new DataTable();
-        }
     }
 }
