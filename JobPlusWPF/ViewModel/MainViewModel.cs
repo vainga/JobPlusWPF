@@ -58,8 +58,7 @@ namespace JobPlusWPF.ViewModel
             "Работодатели",
             "Вакансии",
             "Соискатели",
-            "Архив соискателей",
-            "Архив работодателей"
+            "Архив",
         };
 
         public string SelectedRole
@@ -449,6 +448,12 @@ namespace JobPlusWPF.ViewModel
                         CurrentUserControl = new VacancyDataGrid(vacancyViewModel);
                         break;
 
+                    case "Архив":
+                        var archiveViewModel = _serviceProvider.GetRequiredService<ArchiveDataGridViewModel>();
+                        await archiveViewModel.LoadArchiveEntriesAsync();
+                        CurrentUserControl = new ArchiveDataGrid(archiveViewModel);
+                        break;
+
                     default:
                         CurrentUserControl = null;
                         break;
@@ -538,7 +543,10 @@ namespace JobPlusWPF.ViewModel
 
 
 
-        private bool CanAdd(object parameter) => !string.IsNullOrEmpty(SelectedRole);
+        private bool CanAdd(object parameter)
+        {
+            return !string.IsNullOrEmpty(SelectedRole) && SelectedRole != "Архив";
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:JobPlusWPF"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1600">
+        Title="Главное окно" Height="800" Width="1600">
 
     <Window.Resources>
         <!-- MaterialDesign Resource Dictionary -->

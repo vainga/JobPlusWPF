@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using JobPlusWPF.ViewModel;
 
 namespace JobPlusWPF.View
 {
@@ -20,9 +21,10 @@ namespace JobPlusWPF.View
     /// </summary>
     public partial class ArchiveDataGrid : UserControl
     {
-        public ArchiveDataGrid()
+        public ArchiveDataGrid(ArchiveDataGridViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
         }
     }
 }

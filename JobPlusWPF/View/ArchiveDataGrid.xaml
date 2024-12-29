@@ -7,6 +7,33 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <DataGrid x:Name="archiveDataGrid" 
+                  ItemsSource="{Binding ArchiveEntries}" 
+                  SelectedItem="{Binding SelectedArchiveEntry}"
+                  AutoGenerateColumns="False" 
+                  Margin="10"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  ColumnWidth="Auto"
+                  HeadersVisibility="Column">
+            <DataGrid.Columns>
+
+                <!-- Название Вакансии -->
+                <DataGridTextColumn Header="Вакансия" Binding="{Binding Vacancy.Position}" Width="Auto" />
+
+                <!-- Работодатель -->
+                <DataGridTextColumn Header="Работодатель" Binding="{Binding Vacancy.Employer.Name}" Width="Auto" />
+
+                <!-- Имя Соискателя -->
+                <DataGridTextColumn Header="Соискатель" Binding="{Binding JobSeeker.Name}" Width="Auto" />
+
+                <!-- Дата Перевода -->
+                <DataGridTextColumn Header="Дата перевода" Binding="{Binding TransferDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="Auto" />
+
+                <!-- Имя Пользователя -->
+                <DataGridTextColumn Header="Пользователь" Binding="{Binding User.Login}" Width="Auto" />
+
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
