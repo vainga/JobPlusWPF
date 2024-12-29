@@ -12,6 +12,7 @@ namespace JobPlusWPF.Service
     {
         private readonly IRepository<Vacancy> _vacancyRepository;
 
+
         public VacancyService(IRepository<Vacancy> vacancyRepository)
         {
             _vacancyRepository = vacancyRepository ?? throw new ArgumentNullException(nameof(vacancyRepository));
@@ -52,5 +53,6 @@ namespace JobPlusWPF.Service
 
             await _vacancyRepository.UpdateAsync(existingVacancy);
         }
+
     }
 }

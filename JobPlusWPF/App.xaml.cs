@@ -40,12 +40,14 @@ namespace JobPlusWPF
             services.AddScoped<IRepository<StreetDirectory>, Repository<StreetDirectory>>();
             services.AddScoped<IRepository<EducationLevel>, Repository<EducationLevel>>();
             services.AddScoped<IRepository<Status>, Repository<Status>>();
+            services.AddScoped<IRepository<ArchiveEntry>, Repository<ArchiveEntry>>();
 
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IJobSeekerService, JobSeekerService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IEmplyerService, EmplyerService>();
             services.AddScoped<IVacancyService, VacancyService>();
+            services.AddScoped<IArchiveService, ArchiveService>();
 
 
             // Регистрация навигатора

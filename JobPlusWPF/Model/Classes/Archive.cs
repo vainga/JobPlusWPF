@@ -14,11 +14,16 @@ namespace JobPlusWPF.Model.Classes
         public int JobSeekerId { get; private set; }
         public JobSeeker JobSeeker { get; private set; }
         public DateTime TransferDate { get; private set; }
-        public ArchiveEntry(int vacancyId, int jobSeekerId, DateTime transferDate)
+
+        public int UserId { get; private set; }
+        public User User { get; private set; }
+
+        public ArchiveEntry(int vacancyId, int jobSeekerId, DateTime transferDate, int userId)
         {
             VacancyId = vacancyId;
             JobSeekerId = jobSeekerId;
             TransferDate = transferDate;
+            UserId = userId;
         }
 
     }

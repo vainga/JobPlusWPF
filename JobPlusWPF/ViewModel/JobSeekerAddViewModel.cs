@@ -57,6 +57,7 @@ namespace JobPlusWPF.ViewModel
         private string _educationDocumentFileName;
 
         //Для архива
+        private readonly IArchiveService _archiveService;
         private readonly IVacancyService _vacancyService;
         private ObservableCollection<Vacancy> _vacancies;
         private Vacancy _selectedVacancy;
@@ -629,9 +630,16 @@ namespace JobPlusWPF.ViewModel
                     StatusId
                 );
 
-                jobSeeker.SetId(_editingJobSeeker.Id);
+                jobSeeker.SetId(_editingJobSeeker.Id);           
 
                 await _jobSeekerService.UpdateJobSeekerAsync(jobSeeker);
+
+                if (SelectedStatus.Id == 2)
+                {
+                    var archiveEntry = new ArchiveEntry(SelectedVacancy.Id, jobSeeker.Id, DateTime.UtcNow, userId);
+                    await _archiveService.AddArchiveEntryAsync(archiveEntry);
+                }
+
             }
             else
             {
@@ -719,7 +727,7 @@ namespace JobPlusWPF.ViewModel
             InitializeAsync();
         }
 
-        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, IVacancyService vacancyService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
+        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, IVacancyService vacancyService, IArchiveService archiveService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
             : this(navigator, jobSeekerService, currentUserService)
         {
             _editingJobSeeker = jobSeeker;
@@ -750,6 +758,7 @@ namespace JobPlusWPF.ViewModel
             }
             Vacancies = new ObservableCollection<Vacancy>();
             LoadVacanciesAsync();
+            _archiveService = archiveService;
         }
 
         public async Task LoadVacanciesAsync()

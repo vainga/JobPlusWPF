@@ -27,6 +27,7 @@ namespace JobPlusWPF.ViewModel
         private readonly IEmplyerService _emplyerService;
         private readonly IVacancyService _vacancyService;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IArchiveService _archiveService;
 
         private readonly IRepository<CityDirectory> _cityRepository;
         private readonly IRepository<StreetDirectory> _streetRepository;
@@ -118,7 +119,7 @@ namespace JobPlusWPF.ViewModel
 
         private readonly AppDbContext _dbContext;
 
-        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository, IVacancyService vacancyService)
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository, IVacancyService vacancyService, IArchiveService archiveService)
         {
             _navigationService = navigator;
             _dbContext = dbContext;
@@ -140,6 +141,7 @@ namespace JobPlusWPF.ViewModel
             RefreshCommand = new RelayCommand(OnRefresh);
             EditCommand = new RelayCommand(OnEdit, CanEdit);
             _vacancyService = vacancyService;
+            _archiveService = archiveService;
 
 
             //LoadUserControl();
@@ -331,6 +333,7 @@ namespace JobPlusWPF.ViewModel
                         _navigationService,
                         _jobSeekerService,
                         _vacancyService,
+                        _archiveService,
                         _currentUserService,
                         selectedJobSeeker
                     );
