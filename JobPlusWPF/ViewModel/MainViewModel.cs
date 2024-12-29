@@ -28,6 +28,7 @@ namespace JobPlusWPF.ViewModel
         private readonly IVacancyService _vacancyService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IArchiveService _archiveService;
+        private readonly IBenefitService _benefitService;
 
         private readonly IRepository<CityDirectory> _cityRepository;
         private readonly IRepository<StreetDirectory> _streetRepository;
@@ -118,7 +119,7 @@ namespace JobPlusWPF.ViewModel
 
         private readonly AppDbContext _dbContext;
 
-        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository, IVacancyService vacancyService, IArchiveService archiveService)
+        public MainViewModel(INavigator navigator, IServiceProvider serviceProvider, AppDbContext dbContext, IRepository<JobSeeker> jobSeekerRepository, ICurrentUserService currentUserService, IJobSeekerService jobSeekerService, IEmplyerService emplyerService, IRepository<Employer> employerRepository, IRepository<Vacancy> vacancyRepository, IVacancyService vacancyService, IArchiveService archiveService, IBenefitService benefitService)
         {
             _navigationService = navigator;
             _dbContext = dbContext;
@@ -139,9 +140,10 @@ namespace JobPlusWPF.ViewModel
             DeleteCommand = new RelayCommand(OnDelete, CanDelete);
             RefreshCommand = new RelayCommand(OnRefresh);
             EditCommand = new RelayCommand(OnEdit, CanEdit);
+
             _vacancyService = vacancyService;
             _archiveService = archiveService;
-
+            _benefitService = benefitService;
 
             //LoadUserControl();
 
@@ -333,6 +335,7 @@ namespace JobPlusWPF.ViewModel
                         _jobSeekerService,
                         _vacancyService,
                         _archiveService,
+                        _benefitService,
                         _currentUserService,
                         selectedJobSeeker
                     );

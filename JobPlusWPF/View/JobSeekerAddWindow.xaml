@@ -65,7 +65,7 @@
                 <!-- Поле для ввода размера пособия -->
                 <TextBox Name="AllowanceTextBox" Width="400" Margin="0,10,0,0"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                     Text="{Binding AllowanceAmount, Mode=TwoWay}"
+                     Text="{Binding Benefit, Mode=TwoWay}"
                      Visibility="{Binding IsAllowanceTextBoxVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <materialDesign:HintAssist.Hint>Размер пособия</materialDesign:HintAssist.Hint>
                 </TextBox>

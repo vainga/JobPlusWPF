@@ -41,6 +41,7 @@ namespace JobPlusWPF
             services.AddScoped<IRepository<EducationLevel>, Repository<EducationLevel>>();
             services.AddScoped<IRepository<Status>, Repository<Status>>();
             services.AddScoped<IRepository<ArchiveEntry>, Repository<ArchiveEntry>>();
+            services.AddScoped<IRepository<Benefit>, Repository<Benefit>>();
 
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IJobSeekerService, JobSeekerService>();
@@ -48,6 +49,7 @@ namespace JobPlusWPF
             services.AddScoped<IEmplyerService, EmplyerService>();
             services.AddScoped<IVacancyService, VacancyService>();
             services.AddScoped<IArchiveService, ArchiveService>();
+            services.AddScoped<IBenefitService, BenefitService>();
 
 
             // Регистрация навигатора

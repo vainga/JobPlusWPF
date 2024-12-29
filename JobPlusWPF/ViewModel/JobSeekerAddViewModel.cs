@@ -59,6 +59,7 @@ namespace JobPlusWPF.ViewModel
         //Для архива
         private readonly IArchiveService _archiveService;
         private readonly IVacancyService _vacancyService;
+        private readonly IBenefitService _benefitService;
         private ObservableCollection<Vacancy> _vacancies;
         private Vacancy _selectedVacancy;
         private int _vacancyId;
@@ -101,6 +102,23 @@ namespace JobPlusWPF.ViewModel
         public bool IsVacancyComboBoxVisible => SelectedStatus?.Id == 2;
         public bool IsAllowanceTextBoxVisible => SelectedStatus?.Id == 3;
 
+        ///
+
+
+
+        ///Для пособия
+        private int _benefit;
+        public int Benefit
+        {
+            get { return _benefit; }
+            set
+            {
+                _benefit = value;
+                OnPropertyChanged(nameof(Benefit));
+            }
+        }
+
+        ///
 
 
         public string Name
@@ -628,6 +646,11 @@ namespace JobPlusWPF.ViewModel
                     await _vacancyService.ArchiveVacancyAsync(SelectedVacancy);
                     await _archiveService.AddArchiveEntryAsync(archiveEntry);
                 }
+                else if (SelectedStatus.Id == 3)
+                {
+                    var benefit = new Benefit(Benefit, jobSeeker.Id, DateTime.UtcNow, userId);
+                    await _benefitService.AddBenefitAsync(benefit);
+                }
 
             }
             else
@@ -716,7 +739,7 @@ namespace JobPlusWPF.ViewModel
             InitializeAsync();
         }
 
-        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, IVacancyService vacancyService, IArchiveService archiveService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
+        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, IVacancyService vacancyService, IArchiveService archiveService, IBenefitService benefitService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
             : this(navigator, jobSeekerService, currentUserService)
         {
             _editingJobSeeker = jobSeeker;
@@ -748,6 +771,7 @@ namespace JobPlusWPF.ViewModel
             Vacancies = new ObservableCollection<Vacancy>();
             LoadVacanciesAsync();
             _archiveService = archiveService;
+            _benefitService = benefitService;
             _vacancyService = vacancyService;
         }
 
