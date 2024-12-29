@@ -1,0 +1,27 @@
+﻿<Window x:Class="JobPlusWPF.View.SqlQueryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:JobPlusWPF.View"
+        mc:Ignorable="d"
+        Title="Окно запросов" Height="500" Width="800"
+        Closing="Window_Closing">
+    <Grid>
+        <!-- Привязка для текста SqlQuery -->
+        <TextBox Name="SqlQueryTextBox" Height="100" VerticalAlignment="Top" Margin="10" 
+                 AcceptsReturn="True" HorizontalAlignment="Stretch" Text="{Binding SqlQuery, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!-- Привязка команды для кнопки -->
+        <Button Name="ExecuteButton" Content="Выполнить запрос" Height="30" VerticalAlignment="Top" Margin="10,120,10,10" 
+                Command="{Binding ExecuteQueryCommand}"/>
+
+        <!-- DataGrid для отображения результатов -->
+        <DataGrid Name="ResultDataGrid" 
+          VerticalAlignment="Stretch" 
+          Margin="10,160,10,10" 
+          HorizontalAlignment="Stretch" 
+          AutoGenerateColumns="True" 
+          ItemsSource="{Binding QueryResult}" />
+    </Grid>
+</Window>

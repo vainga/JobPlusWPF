@@ -54,6 +54,10 @@ namespace JobPlusWPF.ViewModel
         public ICommand AddCommand { get; }
         public ICommand DeleteCommand { get; }
 
+        public ICommand AddJobSeekerCommand { get; }
+        public ICommand AddEmployerCommand { get; }
+        public ICommand AddVacancyCommand { get; }
+
         public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
         {
             "Работодатели",
@@ -62,6 +66,31 @@ namespace JobPlusWPF.ViewModel
             "Архив",
             "Пособия"
         };
+
+
+        // Для меню 
+        public bool IsAdminMenuVisible => _currentUserService.GetCurrentUserRole() == Role.Admin;
+
+        public ICommand SetRoleCommand { get; }
+        public ICommand ShowAboutCommand { get; }
+        public ICommand SQLQueryCommand { get; }
+
+        private void OnSetRole(string role)
+        {
+            SelectedRole = role;
+        }
+
+        private void OnShowAbout(object parameter)
+        {
+            _navigationService.ShowDialog<AboutWindow>();
+        }
+
+        private void OnSQLQuery(object parameter)
+        {
+            _navigationService.ShowDialog<SqlQueryWindow>();
+        }
+
+        //
 
         public string SelectedRole
         {
@@ -142,12 +171,19 @@ namespace JobPlusWPF.ViewModel
             RefreshCommand = new RelayCommand(OnRefresh);
             EditCommand = new RelayCommand(OnEdit, CanEdit);
 
+            AddJobSeekerCommand = new RelayCommand(_ => AddJobSeeker());
+            AddEmployerCommand = new RelayCommand(_ => AddEmployer());
+            AddVacancyCommand = new RelayCommand(_ => AddVacancy());
+
+            ShowAboutCommand = new RelayCommand(OnShowAbout);
+            SQLQueryCommand = new RelayCommand(OnSQLQuery);
+
             _vacancyService = vacancyService;
             _archiveService = archiveService;
             _benefitService = benefitService;
 
             //LoadUserControl();
-
+            SetRoleCommand = new RelayCommand<string>(OnSetRole);
         }
 
         private async void OnDelete(object parameter)
@@ -501,25 +537,43 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
+        private void AddJobSeeker()
+        {
+            _navigationService.ShowDialog<JobSeekerAddWindow>();
+            OnRefresh(null);
+        }
+
+        private void AddEmployer()
+        {
+            _navigationService.ShowDialog<AddEmployer>();
+            OnRefresh(null);
+        }
+
+        private void AddVacancy()
+        {
+            _navigationService.ShowDialog<AddVacancy>();
+            OnRefresh(null);
+        }
+
+
         private void OnAdd(object parameter)
         {
-            if (SelectedRole == "Соискатели")
+            switch (SelectedRole)
             {
-                _navigationService.ShowDialog<JobSeekerAddWindow>();
-                OnRefresh(null);
+                case "Соискатели":
+                    AddJobSeeker();
+                    break;
+                case "Работодатели":
+                    AddEmployer();
+                    break;
+                case "Вакансии":
+                    AddVacancy();
+                    break;
+                default:
+                    break;
             }
-            if (SelectedRole == "Работодатели")
-            {
-                _navigationService.ShowDialog<AddEmployer>();
-                OnRefresh(null);
-            }
-            if(SelectedRole == "Вакансии")
-            {
-                _navigationService.ShowDialog<AddVacancy>();
-                OnRefresh(null);
-            }
-
         }
+
 
         private async void OnRefresh(object parameter)
         {

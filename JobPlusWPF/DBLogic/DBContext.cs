@@ -46,8 +46,9 @@ namespace JobPlusWPF.DBLogic
         {
             if (!Users.Any())
             {
-                string adminPassword = "admin";
-                var adminUser = new User("admin", adminPassword, Role.Admin);
+                string adminPassword = BCrypt.Net.BCrypt.HashPassword("admin"); // "admin";
+                string adminLogin= "admin";
+                var adminUser = new User(adminLogin, adminPassword, Role.Admin);
                 Users.Add(adminUser);
                 SaveChanges();
             }

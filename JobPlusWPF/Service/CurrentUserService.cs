@@ -23,5 +23,10 @@ namespace JobPlusWPF.Service
 
             return _currentUser.Id;
         }
+
+        public Role GetCurrentUserRole()
+        {
+            return _currentUser.Role; 
+        }
     }
 }

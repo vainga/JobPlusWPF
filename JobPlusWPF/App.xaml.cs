@@ -66,6 +66,7 @@ namespace JobPlusWPF
             services.AddTransient<VacancyDataGridViewModel>();
             services.AddTransient<ArchiveDataGridViewModel>();
             services.AddTransient<BenefitDataGridViewModel>();
+            services.AddScoped<QueryViewModel>();
 
             // Регистрация окон
             services.AddTransient<EnterWindow>();
@@ -73,6 +74,8 @@ namespace JobPlusWPF
             services.AddTransient<JobSeekerAddWindow>();
             services.AddTransient<AddEmployer>();
             services.AddTransient<AddVacancy>();
+            services.AddTransient<AboutWindow>();
+            services.AddTransient<SqlQueryWindow>();
 
             // Строим контейнер зависимостей
             _serviceProvider = services.BuildServiceProvider();

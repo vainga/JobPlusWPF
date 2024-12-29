@@ -11,5 +11,6 @@ namespace JobPlusWPF.Service
     {
         int GetCurrentUserId();
         void SetCurrentUser(User user);
+        Role GetCurrentUserRole();
     }
 }

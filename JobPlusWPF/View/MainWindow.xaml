@@ -20,13 +20,38 @@
 
             <!-- Меню с уменьшенной высотой -->
             <Menu DockPanel.Dock="Top" FontSize="12" Height="30" Background="#F5F5F5">
-                <MenuItem Header="Файл" FontSize="12" VerticalAlignment="Center">
-                    <MenuItem Header="Выход" FontSize="12"/>
+                <MenuItem Header="Соискатель" FontSize="12" VerticalAlignment="Center">
+                    <MenuItem Header="Добавить соискателя" FontSize="12" Command="{Binding AddJobSeekerCommand}" />
                 </MenuItem>
+
+                <MenuItem Header="Работодатель" FontSize="12" VerticalAlignment="Center">
+                    <MenuItem Header="Добавить работодателя" FontSize="12" Command="{Binding AddEmployerCommand}" />
+                </MenuItem>
+
+                <MenuItem Header="Вакансия" FontSize="12" VerticalAlignment="Center">
+                    <MenuItem Header="Добавить вакансию" FontSize="12" Command="{Binding AddVacancyCommand}" />
+                </MenuItem>
+
+                <MenuItem Header="Запросы" FontSize="12" VerticalAlignment="Center" 
+                      Visibility="{Binding IsAdminMenuVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <MenuItem Header="Запросы" FontSize="12" Command="{Binding SQLQueryCommand}" />
+                </MenuItem>
+
+
+                <MenuItem Header="Таблицы" FontSize="12" VerticalAlignment="Center">
+                    <MenuItem Header="Соискатели" FontSize="12" Command="{Binding SetRoleCommand}" CommandParameter="Соискатели" />
+                    <MenuItem Header="Работодатели" FontSize="12" Command="{Binding SetRoleCommand}" CommandParameter="Работодатели" />
+                    <MenuItem Header="Вакансии" FontSize="12" Command="{Binding SetRoleCommand}" CommandParameter="Вакансии" />
+                    <MenuItem Header="Архив" FontSize="12" Command="{Binding SetRoleCommand}" CommandParameter="Архив" />
+                    <MenuItem Header="Пособия" FontSize="12" Command="{Binding SetRoleCommand}" CommandParameter="Пособия" />
+                </MenuItem>
+
                 <MenuItem Header="Справка" FontSize="12" VerticalAlignment="Center">
-                    <MenuItem Header="О программе" FontSize="12"/>
+                    <MenuItem Header="О программе" FontSize="12" Command="{Binding ShowAboutCommand}" />
                 </MenuItem>
+
             </Menu>
+
 
             <!-- Панель инструментов с кнопками и поиском -->
             <Border DockPanel.Dock="Top" Background="#e9ecef" Margin="0,0,0,10" CornerRadius="5">
