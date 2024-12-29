@@ -46,6 +46,31 @@
                     <materialDesign:HintAssist.Hint>Статус</materialDesign:HintAssist.Hint>
                 </ComboBox>
 
+                <!-- ComboBox для выбора вакансии -->
+                <ComboBox Name="VacancyComboBox"
+                  Width="400"
+                  Margin="0,10,0,0"
+                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                  ItemsSource="{Binding Vacancies}"
+                  DisplayMemberPath="Position"
+                  SelectedItem="{Binding SelectedVacancy, Mode=TwoWay}"
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding VacancyId, Mode=TwoWay}"
+                  Visibility="{Binding IsVacancyComboBoxVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <materialDesign:HintAssist.Hint>Выбор вакансии</materialDesign:HintAssist.Hint>
+                </ComboBox>
+
+
+
+                <!-- Поле для ввода размера пособия -->
+                <TextBox Name="AllowanceTextBox" Width="400" Margin="0,10,0,0"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                     Text="{Binding AllowanceAmount, Mode=TwoWay}"
+                     Visibility="{Binding IsAllowanceTextBoxVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <materialDesign:HintAssist.Hint>Размер пособия</materialDesign:HintAssist.Hint>
+                </TextBox>
+
+
 
                 <!-- Имя и фамилия -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,20,0,0">

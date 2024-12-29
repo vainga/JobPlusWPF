@@ -52,7 +52,7 @@ public class JobSeekerDataGridViewModel : INotifyPropertyChanged
         using (var context = new AppDbContext()) // Новый экземпляр контекста
         {
             var jobSeekers = await context.JobSeekers
-                .Where(js => js.UserId == currentUserId)
+                .Where(js => js.UserId == currentUserId && js.StatusId == 1)
                 .Include(js => js.City)
                 .Include(js => js.Street)
                 .Include(js => js.EducationLevel)

@@ -1,4 +1,5 @@
-﻿using JobPlusWPF.Model.Classes;
+﻿using JobPlusWPF.DBLogic;
+using JobPlusWPF.Model.Classes;
 using JobPlusWPF.Model.Interfaces;
 using JobPlusWPF.Service;
 using JobPlusWPF.View;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobPlusWPF.ViewModel
 {
@@ -53,6 +55,64 @@ namespace JobPlusWPF.ViewModel
         private IEnumerable<Status> _statuses = new ObservableCollection<Status>();
 
         private string _educationDocumentFileName;
+
+        //Для архива
+        private readonly IVacancyService _vacancyService;
+        private ObservableCollection<Vacancy> _vacancies;
+        private Vacancy _selectedVacancy;
+        private int _vacancyId;
+        private bool _isVacancyComboBoxVisible;
+
+        // Коллекция вакансий
+        public ObservableCollection<Vacancy> Vacancies
+        {
+            get { return _vacancies; }
+            set
+            {
+                _vacancies = value;
+                OnPropertyChanged(nameof(Vacancies));
+            }
+        }
+
+        // Выбранная вакансия
+        public Vacancy SelectedVacancy
+        {
+            get { return _selectedVacancy; }
+            set
+            {
+                _selectedVacancy = value;
+                OnPropertyChanged(nameof(SelectedVacancy));
+                VacancyId = _selectedVacancy?.Id ?? 0;
+            }
+        }
+
+        // ID выбранной вакансии
+        public int VacancyId
+        {
+            get { return _vacancyId; }
+            set
+            {
+                _vacancyId = value;
+                OnPropertyChanged(nameof(VacancyId));
+            }
+        }
+
+        // Видимость ComboBox (для показа/скрытия)
+        public bool IsVacancyComboBoxVisible
+        {
+            get => SelectedStatus.Id == 2;
+            set
+            {
+                if (_isVacancyComboBoxVisible != value)
+                {
+                    _isVacancyComboBoxVisible = value;
+                    OnPropertyChanged(nameof(IsVacancyComboBoxVisible));
+                }
+            }
+        }
+        public bool IsAllowanceTextBoxVisible => SelectedStatus?.Id == 3;
+
+
 
         public string Name
         {
@@ -223,7 +283,7 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
-        private int StatusId
+        public int StatusId
         {
             get => _statusId;
             set
@@ -372,9 +432,12 @@ namespace JobPlusWPF.ViewModel
                 {
                     _selectedStatus = value;
                     OnPropertyChanged(nameof(SelectedStatus));
+                    OnPropertyChanged(nameof(IsVacancyComboBoxVisible));
+                    OnPropertyChanged(nameof(IsAllowanceTextBoxVisible));
                 }
             }
         }
+
 
         public DateTime RegistrationDate
         {
@@ -656,7 +719,7 @@ namespace JobPlusWPF.ViewModel
             InitializeAsync();
         }
 
-        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
+        public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, IVacancyService vacancyService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
             : this(navigator, jobSeekerService, currentUserService)
         {
             _editingJobSeeker = jobSeeker;
@@ -685,8 +748,30 @@ namespace JobPlusWPF.ViewModel
 
                 RegistrationDate = jobSeeker.RegistrationDate;
             }
+            Vacancies = new ObservableCollection<Vacancy>();
+            LoadVacanciesAsync();
         }
 
+        public async Task LoadVacanciesAsync()
+        {
+            int currentUserId = _currentUserService.GetCurrentUserId();
+            Vacancies.Clear();
+
+            using (var context = new AppDbContext())
+            {
+                var vacancies = await context.Vacancies
+                    .Where(v => v.Employer.UserId == currentUserId)
+                    .Include(v => v.Employer)
+                    .ToListAsync();
+                foreach (var vacancy in vacancies)
+                {
+                    if (!Vacancies.Any(v => v.Id == vacancy.Id))
+                    {
+                        Vacancies.Add(vacancy);
+                    }
+                }
+            }
+        }
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

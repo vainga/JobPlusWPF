@@ -57,7 +57,8 @@ namespace JobPlusWPF.ViewModel
             "Работодатели",
             "Вакансии",
             "Соискатели",
-            "Совпадения"
+            "Архив соискателей",
+            "Архив работодателей"
         };
 
         public string SelectedRole
@@ -329,6 +330,7 @@ namespace JobPlusWPF.ViewModel
                     var viewModel = new JobSeekerAddViewModel(
                         _navigationService,
                         _jobSeekerService,
+                        _vacancyService,
                         _currentUserService,
                         selectedJobSeeker
                     );

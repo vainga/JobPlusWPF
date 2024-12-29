@@ -27,6 +27,7 @@ namespace JobPlusWPF.DBLogic
         public DbSet<Vacancy> Vacancies { get; set; }
         public DbSet<Benefit> Benefits { get; set; }
         public DbSet<Status> Statuses { get; set; }
+        public DbSet<ArchiveEntry> Archive { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -116,6 +117,18 @@ namespace JobPlusWPF.DBLogic
                 .HasOne(v => v.Employer)
                 .WithMany()
                 .HasForeignKey(v => v.EmployerId)  
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ArchiveEntry>()
+                .HasOne(a => a.Vacancy)
+                .WithMany()
+                .HasForeignKey(a => a.VacancyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ArchiveEntry>()
+                .HasOne(a => a.JobSeeker)
+                .WithMany()
+                .HasForeignKey(a => a.JobSeekerId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
