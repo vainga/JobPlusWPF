@@ -60,6 +60,7 @@ namespace JobPlusWPF.ViewModel
             "Вакансии",
             "Соискатели",
             "Архив",
+            "Пособия"
         };
 
         public string SelectedRole
@@ -455,6 +456,12 @@ namespace JobPlusWPF.ViewModel
                         var archiveViewModel = _serviceProvider.GetRequiredService<ArchiveDataGridViewModel>();
                         await archiveViewModel.LoadArchiveEntriesAsync();
                         CurrentUserControl = new ArchiveDataGrid(archiveViewModel);
+                        break;
+
+                    case "Пособия":
+                        var benefitViewModel = _serviceProvider.GetRequiredService<BenefitDataGridViewModel>();
+                        await benefitViewModel.LoadBenefitsAsync();
+                        CurrentUserControl = new BenefitDataGrid(benefitViewModel);
                         break;
 
                     default:
