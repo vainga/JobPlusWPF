@@ -3,6 +3,7 @@ using System;
 using JobPlusWPF.DBLogic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobPlusWPF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241229092006_AddStatus")]
+    partial class AddStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,23 +122,6 @@ namespace JobPlusWPF.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Employers");
-                });
-
-            modelBuilder.Entity("JobPlusWPF.Model.Classes.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("WorkStatus")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("JobPlusWPF.Model.Classes.StreetDirectory", b =>
@@ -268,7 +254,7 @@ namespace JobPlusWPF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<int>("StreetId")
@@ -289,8 +275,6 @@ namespace JobPlusWPF.Migrations
                     b.HasIndex("CityId");
 
                     b.HasIndex("EducationLevelId");
-
-                    b.HasIndex("StatusId");
 
                     b.HasIndex("StreetId");
 
@@ -374,12 +358,6 @@ namespace JobPlusWPF.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("JobPlusWPF.Model.Classes.Status", "Status")
-                        .WithMany("JobSeekers")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("JobPlusWPF.Model.Classes.StreetDirectory", "Street")
                         .WithMany("JobSeekers")
                         .HasForeignKey("StreetId")
@@ -395,8 +373,6 @@ namespace JobPlusWPF.Migrations
                     b.Navigation("City");
 
                     b.Navigation("EducationLevel");
-
-                    b.Navigation("Status");
 
                     b.Navigation("Street");
 
@@ -416,11 +392,6 @@ namespace JobPlusWPF.Migrations
             modelBuilder.Entity("JobPlusWPF.Model.Classes.Employer", b =>
                 {
                     b.Navigation("Vacancies");
-                });
-
-            modelBuilder.Entity("JobPlusWPF.Model.Classes.Status", b =>
-                {
-                    b.Navigation("JobSeekers");
                 });
 
             modelBuilder.Entity("JobPlusWPF.Model.Classes.StreetDirectory", b =>

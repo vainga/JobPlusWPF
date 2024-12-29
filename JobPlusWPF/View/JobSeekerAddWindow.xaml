@@ -35,6 +35,18 @@
                     </Grid>
                 </Button>
 
+                <!-- Статус -->
+                <ComboBox Name="StatusComboBox" Width="400" Margin="0,10,0,0"
+                      Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                      ItemsSource="{Binding Statuses}" 
+                      DisplayMemberPath="WorkStatus" 
+                      SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" 
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding StatusId, Mode=TwoWay}">
+                    <materialDesign:HintAssist.Hint>Статус</materialDesign:HintAssist.Hint>
+                </ComboBox>
+
+
                 <!-- Имя и фамилия -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,20,0,0">
                     <TextBox Name="NameTextBox" Width="200" Margin="0,0,10,0" 

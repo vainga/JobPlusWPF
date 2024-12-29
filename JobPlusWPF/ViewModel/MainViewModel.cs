@@ -31,6 +31,7 @@ namespace JobPlusWPF.ViewModel
         private readonly IRepository<CityDirectory> _cityRepository;
         private readonly IRepository<StreetDirectory> _streetRepository;
         private readonly IRepository<EducationLevel> _educationLevelRepository;
+        private readonly IRepository<Status> _statusRepository;
 
         private readonly IRepository<JobSeeker> _jobSeekerRepository;
         private readonly IRepository<Employer> _employerRepository;

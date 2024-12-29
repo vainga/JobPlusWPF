@@ -24,10 +24,13 @@ public class JobSeeker
     public DateTime RegistrationDate { get; private set; }
     public int UserId { get; private set; }
     public User User { get; private set; }
+    public int StatusId { get; private set; } = 1;
+    public Status Status { get; private set; }
 
     public JobSeeker(string name, string surname, int age, string passportNumber, DateTime passportIssueDate, string passportIssuedBy,
                      string phone, string photo, int cityId, int streetId, int educationLevelId, string institution,
-                     string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate, int userId)
+                     string educationDocumentScan, string specialty, int workExperience, DateTime registrationDate, int userId,
+                     int statusId)
     {
         Name = name;
         Surname = surname;
@@ -46,6 +49,7 @@ public class JobSeeker
         WorkExperience = workExperience;
         RegistrationDate = registrationDate;
         UserId = userId;
+        StatusId = statusId;
     }
 
     public void SetId(int id)
@@ -69,7 +73,8 @@ public class JobSeeker
     string educationDocumentScan,
     string specialty,
     int workExperience,
-    DateTime registrationDate)
+    DateTime registrationDate,
+    int statusId)
     {
         Name = name;
         Surname = surname;
@@ -87,7 +92,6 @@ public class JobSeeker
         Specialty = specialty;
         WorkExperience = workExperience;
         RegistrationDate = registrationDate;
+        StatusId = statusId;
     }
-
-
 }

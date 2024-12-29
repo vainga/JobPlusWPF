@@ -39,6 +39,7 @@ namespace JobPlusWPF
             services.AddScoped<IRepository<CityDirectory>, Repository<CityDirectory>>();
             services.AddScoped<IRepository<StreetDirectory>, Repository<StreetDirectory>>();
             services.AddScoped<IRepository<EducationLevel>, Repository<EducationLevel>>();
+            services.AddScoped<IRepository<Status>, Repository<Status>>();
 
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IJobSeekerService, JobSeekerService>();
@@ -91,6 +92,7 @@ namespace JobPlusWPF
                     // Заполнение начальных данных
                     dbContext.SeedAdmin();
                     dbContext.SeedEducationLevels();
+                    dbContext.SeedStatuses();
                 }
             });
 

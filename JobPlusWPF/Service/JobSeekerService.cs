@@ -13,18 +13,21 @@ namespace JobPlusWPF.Service
         private readonly IRepository<CityDirectory> _cityRepository;
         private readonly IRepository<StreetDirectory> _streetRepository;
         private readonly IRepository<EducationLevel> _educationLevelRepository;
+        private readonly IRepository<Status> _statusRepository;
+
 
 
         public JobSeekerService(
             IRepository<JobSeeker> jobSeekerRepository,
             IRepository<CityDirectory> cityRepository,
             IRepository<StreetDirectory> streetRepository,
-            IRepository<EducationLevel> educationLevelRepository)
+            IRepository<EducationLevel> educationLevelRepository, IRepository<Status> statusRepository)
         {
             _jobSeekerRepository = jobSeekerRepository ?? throw new ArgumentNullException(nameof(jobSeekerRepository));
             _cityRepository = cityRepository ?? throw new ArgumentNullException(nameof(cityRepository));
             _streetRepository = streetRepository ?? throw new ArgumentNullException(nameof(streetRepository));
             _educationLevelRepository = educationLevelRepository ?? throw new ArgumentNullException(nameof(educationLevelRepository));
+            _statusRepository = statusRepository ?? throw new ArgumentNullException(nameof(statusRepository));
         }
 
         public async Task AddJobSeekerAsync(JobSeeker jobSeeker)
@@ -39,6 +42,10 @@ namespace JobPlusWPF.Service
             return await _educationLevelRepository.GetAllAsync();
         }
 
+        public async Task<IEnumerable<Status>> GetStatusesAsync()
+        {
+            return await _statusRepository.GetAllAsync();
+        }
 
         public async Task<CityDirectory> GetCityByNameAsync(string cityName)
         {
@@ -91,7 +98,8 @@ namespace JobPlusWPF.Service
                 jobSeeker.EducationDocumentScan,
                 jobSeeker.Specialty,
                 jobSeeker.WorkExperience,
-                jobSeeker.RegistrationDate
+                jobSeeker.RegistrationDate,
+                jobSeeker.StatusId
             );
 
             // Сохраняем изменения через репозиторий

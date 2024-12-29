@@ -26,6 +26,7 @@ namespace JobPlusWPF.DBLogic
         public DbSet<Employer> Employers { get; set; }
         public DbSet<Vacancy> Vacancies { get; set; }
         public DbSet<Benefit> Benefits { get; set; }
+        public DbSet<Status> Statuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -69,6 +70,16 @@ namespace JobPlusWPF.DBLogic
                 .HasOne(j => j.EducationLevel)
                 .WithMany(e => e.JobSeekers)
                 .HasForeignKey(j => j.EducationLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<JobSeeker>()
+            //    .Property(j => j.StatusId)
+            //    .HasDefaultValue(1); 
+
+            modelBuilder.Entity<JobSeeker>()
+                .HasOne(j => j.Status)
+                .WithMany(s => s.JobSeekers)
+                .HasForeignKey(j => j.StatusId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<JobSeeker>()
@@ -129,6 +140,23 @@ namespace JobPlusWPF.DBLogic
         };
 
                 EducationLevels.AddRange(educationLevels);
+
+                SaveChanges();
+            }
+        }
+
+        public void SeedStatuses()
+        {
+            if (!Statuses.Any())
+            {
+                var statuses = new List<Status>
+            {
+                new Status("В работе"),
+                new Status("В архиве"),
+                new Status("На пособии")
+            };
+
+                Statuses.AddRange(statuses);
 
                 SaveChanges();
             }

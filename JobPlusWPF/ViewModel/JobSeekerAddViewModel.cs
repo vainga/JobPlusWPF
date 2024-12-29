@@ -4,8 +4,11 @@ using JobPlusWPF.Service;
 using JobPlusWPF.View;
 using Microsoft.Win32;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -34,7 +37,7 @@ namespace JobPlusWPF.ViewModel
         private string _streetName;
         private StreetDirectory _street;
         private int _educationLevelId;
-        private EducationLevel _educationLevel;
+        //private EducationLevel _educationLevel;
         private string _institution;
         private string _educationDocumentScan;
         private string _specialty;
@@ -42,8 +45,12 @@ namespace JobPlusWPF.ViewModel
         private DateTime _registrationDate;
         private int _workExperienceYears;
         private int _workExperienceMonths;
+        private int _statusId;
         private EducationLevel _selectedEducationLevel;
         private IEnumerable<EducationLevel> _educationLevels;
+        
+        private Status _selectedStatus;
+        private IEnumerable<Status> _statuses = new ObservableCollection<Status>();
 
         private string _educationDocumentFileName;
 
@@ -216,18 +223,31 @@ namespace JobPlusWPF.ViewModel
             }
         }
 
-        public EducationLevel EducationLevel
+        private int StatusId
         {
-            get => _educationLevel;
+            get => _statusId;
             set
             {
-                if (_educationLevel != value)
+                if (_statusId != value)
                 {
-                    _educationLevel = value;
-                    OnPropertyChanged(nameof(EducationLevel));
+                    _statusId = value;
+                    OnPropertyChanged(nameof(StatusId));
                 }
             }
         }
+
+        //public EducationLevel EducationLevel
+        //{
+        //    get => _educationLevel;
+        //    set
+        //    {
+        //        if (_educationLevel != value)
+        //        {
+        //            _educationLevel = value;
+        //            OnPropertyChanged(nameof(EducationLevel));
+        //        }
+        //    }
+        //}
 
         public string Institution
         {
@@ -316,6 +336,42 @@ namespace JobPlusWPF.ViewModel
                 {
                     _selectedEducationLevel = value;
                     OnPropertyChanged(nameof(SelectedEducationLevel));
+                }
+            }
+        }
+
+        public IEnumerable<Status> Statuses
+        {
+            get
+            {
+                if (_editingJobSeeker == null)
+                {
+                    // Возвращаем коллекцию с единственным статусом
+                    return new List<Status> { _statuses.FirstOrDefault(s => s.Id == 1) };
+                }
+
+                return _statuses;
+            }
+            set
+            {
+                if (_statuses != value)
+                {
+                    _statuses = value;
+                    OnPropertyChanged(nameof(Statuses));
+                }
+            }
+        }
+
+
+        public Status SelectedStatus
+        {
+            get => _selectedStatus;
+            set
+            {
+                if (_selectedStatus != value)
+                {
+                    _selectedStatus = value;
+                    OnPropertyChanged(nameof(SelectedStatus));
                 }
             }
         }
@@ -506,7 +562,8 @@ namespace JobPlusWPF.ViewModel
                     Specialty,
                     WorkExperienceYears * 12 + WorkExperienceMonths,
                     _editingJobSeeker.RegistrationDate,
-                    userId
+                    userId,
+                    StatusId
                 );
 
                 jobSeeker.SetId(_editingJobSeeker.Id);
@@ -532,7 +589,8 @@ namespace JobPlusWPF.ViewModel
                     Specialty,
                     WorkExperienceYears * 12 + WorkExperienceMonths,
                     DateTime.UtcNow,
-                    userId
+                    userId,
+                    StatusId
                 );
 
                 await _jobSeekerService.AddJobSeekerAsync(jobSeeker);
@@ -564,12 +622,26 @@ namespace JobPlusWPF.ViewModel
             WorkExperienceMonths = 0;
             RegistrationDate = DateTime.UtcNow;
             EducationDocumentFileName = string.Empty;
+            StatusId = 1;
         }
 
         private async Task LoadEducationLevels()
         {
             EducationLevels = await _jobSeekerService.GetEducationLevelsAsync();
         }
+
+        private async Task LoadStatuses()
+        {
+            Statuses = await _jobSeekerService.GetStatusesAsync();  
+        }
+
+
+        public async Task InitializeAsync()
+        {
+            await LoadStatuses();
+            await LoadEducationLevels();
+        }
+
 
         public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, ICurrentUserService currentUserService)
         {
@@ -580,8 +652,8 @@ namespace JobPlusWPF.ViewModel
             SelectPhotoCommand = new RelayCommand(SelectPhoto);
             SaveCommand = new RelayCommand(Save);
             LoadEducationDocumentCommand = new RelayCommand(LoadEducationDocument);
-
-            LoadEducationLevels();
+            
+            InitializeAsync();
         }
 
         public JobSeekerAddViewModel(INavigator navigator, IJobSeekerService jobSeekerService, ICurrentUserService currentUserService, JobSeeker jobSeeker)
@@ -605,6 +677,7 @@ namespace JobPlusWPF.ViewModel
                 Institution = jobSeeker.Institution;
                 EducationDocumentScan = jobSeeker.EducationDocumentScan;
                 Specialty = jobSeeker.Specialty;
+                StatusId = jobSeeker.StatusId;
 
                 int totalMonths = jobSeeker.WorkExperience;
                 WorkExperienceYears = totalMonths / 12;
